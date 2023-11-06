@@ -1,0 +1,14 @@
+# build directory created by pip
+build
+
+# egg info directory created by pip
+*.egg-info
+
+# caches created by python
+__pycache__
+
+# iPython Notebook checkpoints
+.ipynb_checkpoints
+
+# MacOS DS_Store files
+.DS_Store

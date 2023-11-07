@@ -1,16 +1,16 @@
 {
     "categories": [
         {
-            "name": "Elliptical",
+            "name": "Compact-Spheroidal",
             "isAlso": [],
-            "isNot": ["Disk", "Irregular"],
+            "isNot": ["Disk", "Interacting/Merger", "Undefined", "Lens System"],
             "hotkey": "0",
             "categories": []
         },
         {
             "name": "Disk",
             "isAlso": [],
-            "isNot": ["Elliptical", "Irregular"],
+            "isNot": ["Compact-Spheroidal", "Interacting/Merger", "Undefined", "Lens System"],
             "hotkey": "1",
             "categories": [
                 {
@@ -44,9 +44,23 @@
             ]
         },
         {
-            "name": "Irregular",
+            "name": "Interacting/Merger",
             "isAlso": [],
-            "isNot": ["Disk", "Elliptical"],
+            "isNot": ["Disk", "Compact-Spheroidal", "Undefined", "Lens System"],
+            "hotkey": "6",
+            "categories": []
+        },
+        {
+            "name": "Undefined",
+            "isAlso": [],
+            "isNot": ["Disk", "Compact-Spheroidal", "Interacting/Merger", "Lens System"],
+            "hotkey": "6",
+            "categories": []
+        },
+        {
+            "name": "Lens System",
+            "isAlso": [],
+            "isNot": ["Disk", "Compact-Spheroidal", "Interacting/Merger", "Undefined"],
             "hotkey": "6",
             "categories": []
         }

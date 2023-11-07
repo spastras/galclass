@@ -1,0 +1,54 @@
+{
+    "categories": [
+        {
+            "name": "Elliptical",
+            "isAlso": [],
+            "isNot": ["Disk", "Irregular"],
+            "hotkey": "0",
+            "categories": []
+        },
+        {
+            "name": "Disk",
+            "isAlso": [],
+            "isNot": ["Elliptical", "Irregular"],
+            "hotkey": "1",
+            "categories": [
+                {
+                    "name": "Spiral",
+                    "isAlso": [],
+                    "isNot": [],
+                    "hotkey": "2",
+                    "categories": []
+                },
+                {
+                    "name": "Bar",
+                    "isAlso": [],
+                    "isNot": [],
+                    "hotkey": "3",
+                    "categories": []
+                },
+                {
+                    "name": "Bulge",
+                    "isAlso": [],
+                    "isNot": [],
+                    "hotkey": "4",
+                    "categories": []
+                },
+                {
+                    "name": "Clumpy",
+                    "isAlso": [],
+                    "isNot": [],
+                    "hotkey": "5",
+                    "categories": []
+                }
+            ]
+        },
+        {
+            "name": "Irregular",
+            "isAlso": [],
+            "isNot": ["Disk", "Elliptical"],
+            "hotkey": "6",
+            "categories": []
+        }
+    ]
+}

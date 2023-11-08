@@ -205,6 +205,11 @@ class MainWindow(QMainWindow):
         self.navigationToolbar.galaxyCombobox.setCurrentIndex(self.igalaxy)
         self.navigationToolbar.galaxyCombobox.blockSignals(False)
 
+        # Update the info model
+        infoOfGalaxy={"Name": self.substrate.fileDict['galaxies'][self.igalaxy]['name'], "Filters": self.substrate.fileDict['galaxies'][self.igalaxy]['filters']}
+        # infoOfGalaxy.update(self.substrate.fileDict['galaxies'][self.igalaxy]['info'])
+        self.categoriesToolbar.updateInfoModel(infoOfGalaxy)
+
         # Update the filter combobox
         self.navigationToolbar.updateFilterCombobox(self.substrate.fileDict['galaxies'][self.igalaxy]['filters'])
 

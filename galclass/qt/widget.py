@@ -10,7 +10,7 @@ from functools import partial
 
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QStandardItem, QStandardItemModel
-from PyQt6.QtWidgets import QCompleter, QSizePolicy, QComboBox, QLineEdit, QMenuBar, QLabel, QWidget, QToolBar, QGridLayout, QGroupBox, QTextEdit, QCheckBox, QTabWidget, QToolButton, QSpacerItem
+from PyQt6.QtWidgets import QAbstractItemView, QCompleter, QSizePolicy, QComboBox, QLineEdit, QTableView, QMenuBar, QLabel, QWidget, QToolBar, QGridLayout, QGroupBox, QTextEdit, QCheckBox, QTabWidget, QToolButton, QSpacerItem
 
 # Local #
 
@@ -120,10 +120,12 @@ class categoriesToolbar(QToolBar):
 
         # Initialize tabs
         self.__initCategoriesTab()
+        self.__initInfoTab()
         
         # Initialize tab widget
         tabWidget=QTabWidget(self)
         tabWidget.addTab(self.categoriesTab, 'Categories')
+        tabWidget.addTab(self.infoTab, 'Info')
 
         # Add tab widget
         self.addWidget(tabWidget)
@@ -226,7 +228,7 @@ class categoriesToolbar(QToolBar):
         layout.addWidget(categoriesGroupbox, 0, 0, 1, 1)
 
         # Initialize the comments group box
-        commentsGroupbox=QGroupBox("Commnets")
+        commentsGroupbox=QGroupBox("Comments")
         commentsGroupbox.setCheckable(False)
 
         # Initialize the comments groupbox layout
@@ -250,6 +252,52 @@ class categoriesToolbar(QToolBar):
         # Initialize categories tab widget
         self.categoriesTab=QWidget()
         self.categoriesTab.setLayout(layout)
+
+        # Return
+        return
+    
+    def __initInfoTab(self):
+        """
+        Initialize the information tab
+        """
+
+        # Initialize the tab layout
+        layout=QGridLayout()
+
+        # Initialize the info group box
+        infoGroupbox=QGroupBox("Info")
+        infoGroupbox.setCheckable(False)
+
+        # Initialize the info groupbox layout
+        infoGroupboxLayout=QGridLayout()
+
+        # Set column and row stretch
+        infoGroupboxLayout.setColumnStretch(0, 1)
+        infoGroupboxLayout.setRowStretch(0, 1)
+
+        # Initialize the info model
+        self.infoModel=QStandardItemModel(self)
+        self.infoModel.setHorizontalHeaderLabels(["Key", "Value"])
+
+        # Initialize the table view
+        self.infoTableView=QTableView(self)
+        self.infoTableView.setModel(self.infoModel)
+        self.infoTableView.verticalHeader().setVisible(False)
+        self.infoTableView.horizontalHeader().setStretchLastSection(True)
+        self.infoTableView.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        
+        # Add the info table view
+        infoGroupboxLayout.addWidget(self.infoTableView, 0, 0, 1, 1)
+
+        # Set the info groupbox layout
+        infoGroupbox.setLayout(infoGroupboxLayout)
+
+        # Add the info groupbox to tab layout
+        layout.addWidget(infoGroupbox, 0, 0, 1, 1)
+
+        # Initialize info tab widget
+        self.infoTab=QWidget()
+        self.infoTab.setLayout(layout)
 
         # Return
         return
@@ -302,7 +350,7 @@ class categoriesToolbar(QToolBar):
             if(self.categoryCheckboxes['checkbox'][icategory].isChecked()):
                 categories.append(self.categoryCheckboxes['name'][icategory])
         
-        # Determine the commnets for the galaxy
+        # Determine the comments for the galaxy
         comments=self.commentsTextEdit.toPlainText()
 
         # Return
@@ -349,6 +397,25 @@ class categoriesToolbar(QToolBar):
         
         # Restore the comments in the comments textedit
         self.commentsTextEdit.setText(comments)
+
+        # Return
+        return
+    
+    def updateInfoModel(self, info: dict):
+        """
+        Updates the items of the info model
+        """
+
+        # Clear the info model
+        self.infoModel.clear()
+
+        # Add the info as items to the info model
+        if(info):
+            self.infoModel.appendColumn([QStandardItem(str(key)) for key in info.keys()])
+            self.infoModel.appendColumn([QStandardItem(str(value)) for value in info.values()])
+        
+        # Set the horizontal header labels
+        self.infoModel.setHorizontalHeaderLabels(["Key", "Value"])
 
         # Return
         return

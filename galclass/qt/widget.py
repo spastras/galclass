@@ -8,8 +8,9 @@ import numpy as np
 
 from functools import partial
 
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QSizePolicy, QComboBox, QMenuBar, QLabel, QWidget, QToolBar, QGridLayout, QGroupBox, QTextEdit, QCheckBox, QTabWidget, QToolButton, QSpacerItem
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtGui import QStandardItem, QStandardItemModel
+from PyQt6.QtWidgets import QCompleter, QSizePolicy, QComboBox, QLineEdit, QMenuBar, QLabel, QWidget, QToolBar, QGridLayout, QGroupBox, QTextEdit, QCheckBox, QTabWidget, QToolButton, QSpacerItem
 
 # Local #
 
@@ -409,6 +410,7 @@ class navigationToolbar(QToolBar):
         galaxyGroupboxLayout.setRowStretch(0, 1)
         galaxyGroupboxLayout.setRowStretch(1, 1)
         galaxyGroupboxLayout.setRowStretch(2, 1)
+        galaxyGroupboxLayout.setRowStretch(3, 1)
 
         # Initialize the galaxy groupbox widgets
 
@@ -423,6 +425,20 @@ class navigationToolbar(QToolBar):
         self.galaxyCombobox.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.galaxyCombobox.currentIndexChanged.connect(self.parentWindow.loadGalaxy)
 
+        # Initialize the galaxy model and completer
+        self.galaxyModel=QStandardItemModel(self)
+        self.galaxyCompleter=QCompleter()
+        self.galaxyCompleter.setModel(self.galaxyModel)
+        self.galaxyCompleter.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
+        self.galaxyCompleter.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
+        self.galaxyCompleter.activated.connect(self.performGalaxySearch)
+
+        # Initialize the galaxy line edit
+        self.galaxyLineEdit=QLineEdit(self)
+        self.galaxyLineEdit.setPlaceholderText("Search")
+        self.galaxyLineEdit.setCompleter(self.galaxyCompleter)
+        self.galaxyLineEdit.editingFinished.connect(self.performGalaxySearch)
+
         # Initialize the next galaxy button
         self.nextGalaxyButton=QToolButton(self)
         self.nextGalaxyButton.setDefaultAction(self.substrate.actionSubstrate.navigationActions[2])
@@ -430,7 +446,8 @@ class navigationToolbar(QToolBar):
         # Append the galaxy widgets to the layout
         galaxyGroupboxLayout.addWidget(self.previousGalaxyButton, 0, 0, 1, 1, Qt.AlignmentFlag.AlignLeft)
         galaxyGroupboxLayout.addWidget(self.galaxyCombobox, 0, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-        galaxyGroupboxLayout.addWidget(self.nextGalaxyButton, 0, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
+        galaxyGroupboxLayout.addWidget(self.galaxyLineEdit, 0, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+        galaxyGroupboxLayout.addWidget(self.nextGalaxyButton, 0, 3, 1, 1, Qt.AlignmentFlag.AlignRight)
 
         # Set the galaxy groupbox layout
         galaxyGroupbox.setLayout(galaxyGroupboxLayout)
@@ -481,6 +498,39 @@ class navigationToolbar(QToolBar):
         # Initialize the navigation tab widget
         self.navigationTab=QWidget()
         self.navigationTab.setLayout(layout)
+
+        # Return
+        return
+    
+    def performGalaxySearch(self):
+        """
+        Performs the search for the galaxy specified in the galaxy line edit
+        """
+
+        # Search for a galaxy with the specified name
+        igalaxy=self.galaxyCombobox.findText(self.galaxyLineEdit.text(), Qt.MatchFlag.MatchFixedString)
+
+        # If a galaxy is found, load it
+        if(igalaxy>=0):
+            self.parentWindow.loadGalaxy(igalaxy)
+
+        # Clear the galaxy line edit
+        QTimer.singleShot(0, self.galaxyLineEdit.clear)
+
+        # Return
+        return
+    
+    def updateGalaxyModel(self, galaxies: list):
+        """
+        Updates the items of the model to be used for autocompletion
+        """
+
+        # Clear the galaxy model
+        self.galaxyModel.clear()
+
+        # Add the galaxies as items to the galaxy model
+        for galaxy in galaxies:
+            self.galaxyModel.appendRow(QStandardItem(galaxy))
 
         # Return
         return

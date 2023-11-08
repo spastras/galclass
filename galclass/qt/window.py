@@ -160,6 +160,9 @@ class MainWindow(QMainWindow):
         # Update the galaxy combobox
         self.navigationToolbar.updateGalaxyCombobox([self.substrate.fileDict['galaxies'][igalaxy]['name'] for igalaxy in range(self.ngalaxies)])
 
+        # Update the galaxy model
+        self.navigationToolbar.updateGalaxyModel([self.substrate.fileDict['galaxies'][igalaxy]['name'] for igalaxy in range(self.ngalaxies)])
+
         # Load the first galaxy of the file dictionary
         self.loadGalaxy(0, noReadOut=True)
 

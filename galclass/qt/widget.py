@@ -314,7 +314,8 @@ class categoriesToolbar(QToolBar):
             checkbox.setCheckable(True)
             checkbox.setChecked(False)
             checkbox.setEnabled(self.categoryWidgetsEnabled)
-            checkbox.setShortcut(QKeySequence(subcategory['shortcut']))
+            if(subcategory['shortcut']!=""):
+                checkbox.setShortcut(QKeySequence(subcategory['shortcut']))
             checkbox.stateChanged.connect(partial(self.checkboxToggled, subname, subisAlso, subisNot))
             
             # Append the checkbox and its metadata to the category checkboxes list

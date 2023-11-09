@@ -245,8 +245,11 @@ class MainWindow(QMainWindow):
         self.navigationToolbar.filterCombobox.setCurrentIndex(self.ifilter)
         self.navigationToolbar.filterCombobox.blockSignals(False)
 
+        # Determine the path to the filter pdf file
+        filePath=os.path.abspath(self.substrate.fileDict['galaxies'][self.igalaxy]['files'][self.ifilter])
+
         # Load the filter pdf in the web view
-        self.webView.setUrl(QUrl("file://"+os.getcwd()+'/'+self.substrate.fileDict['galaxies'][self.igalaxy]['files'][self.ifilter].replace('\\', '/')))
+        self.webView.setUrl(QUrl("file://"+filePath.replace('\\', '/')))
 
         # Return
         return

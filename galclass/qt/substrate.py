@@ -91,7 +91,7 @@ class QtSubstrate(QObject):
     A class to be used as the substrate for the Qt application
     """
 
-    def __init__(self, categoriesFile: str, outputFileSuffix: Optional[str] = "_classified.json", defaultWindowSize: QSize = QSize(1024, 768)):
+    def __init__(self, categoriesFile: str, outputFileSuffix: Optional[str] = "_classified.json", defaultWindowSize: QSize = QSize(1920, 1080)):
         """
         Constructor
         """
@@ -211,10 +211,6 @@ class QtSubstrate(QObject):
         
         # Set metadata
         self.inputFileLoading=True
-
-        # Clean the snapshot list
-        self.ngalaxies=0
-        self.snapshotList=[]
 
         # Disable category widgets
         self.window.categoriesToolbar.toggleCategoryWidgets(False)

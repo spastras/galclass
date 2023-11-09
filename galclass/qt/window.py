@@ -15,7 +15,7 @@ from PyQt6.QtWebEngineWidgets import QWebEngineView
 
 # Local #
 
-from .widget import MenuBar, navigationToolbar, categoriesToolbar
+from .widget import MenuBar, navigationToolbar, infoToolbar, categoriesToolbar
 
 ###########
 # Classes #
@@ -131,20 +131,22 @@ class MainWindow(QMainWindow):
         """
 
         # Initialize the toolbars
-        self.categoriesToolbar=categoriesToolbar(self, self.substrate)
         self.navigationToolbar=navigationToolbar(self, self.substrate)
+        self.infoToolbar=infoToolbar(self, self.substrate)
+        self.categoriesToolbar=categoriesToolbar(self, self.substrate)
         
         # Add toggle toolbar shortcut
         # self.categoriesToolbar.toggleViewAction().setShortcut(QKeySequence('Ctrl+C'))
         
         # Attach the toolbars
-        self.addToolBar(Qt.ToolBarArea.RightToolBarArea, self.categoriesToolbar)
         self.addToolBar(Qt.ToolBarArea.TopToolBarArea, self.navigationToolbar)
-        # self.addToolBar(Qt.ToolBarArea.BottomToolBarArea, self.snapToolbar)
+        self.addToolBar(Qt.ToolBarArea.LeftToolBarArea, self.infoToolbar)
+        self.addToolBar(Qt.ToolBarArea.RightToolBarArea, self.categoriesToolbar)
         
         # Show toolbars
-        self.categoriesToolbar.show()
         self.navigationToolbar.show()
+        self.infoToolbar.show()
+        self.categoriesToolbar.show()
         
         # Return
         return
@@ -208,7 +210,7 @@ class MainWindow(QMainWindow):
         # Update the info model
         infoOfGalaxy={"Name": self.substrate.fileDict['galaxies'][self.igalaxy]['name'], "Filters": self.substrate.fileDict['galaxies'][self.igalaxy]['filters']}
         # infoOfGalaxy.update(self.substrate.fileDict['galaxies'][self.igalaxy]['info'])
-        self.categoriesToolbar.updateInfoModel(infoOfGalaxy)
+        self.infoToolbar.updateInfoModel(infoOfGalaxy)
 
         # Update the filter combobox
         self.navigationToolbar.updateFilterCombobox(self.substrate.fileDict['galaxies'][self.igalaxy]['filters'])

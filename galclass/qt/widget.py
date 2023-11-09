@@ -136,36 +136,67 @@ class infoToolbar(QToolBar):
         # Initialize the tab layout
         layout=QGridLayout()
 
-        # Initialize the info group box
-        infoGroupbox=QGroupBox("Info")
-        infoGroupbox.setCheckable(False)
+        # Initialize the galaxy info group box
+        galaxyInfoGroupbox=QGroupBox("Galaxy")
+        galaxyInfoGroupbox.setCheckable(False)
 
-        # Initialize the info groupbox layout
-        infoGroupboxLayout=QGridLayout()
+        # Initialize the galaxy info groupbox layout
+        galaxyInfoGroupboxLayout=QGridLayout()
 
         # Set column and row stretch
-        infoGroupboxLayout.setColumnStretch(0, 1)
-        infoGroupboxLayout.setRowStretch(0, 1)
+        galaxyInfoGroupboxLayout.setColumnStretch(0, 1)
+        galaxyInfoGroupboxLayout.setRowStretch(0, 1)
 
-        # Initialize the info model
-        self.infoModel=QStandardItemModel(self)
-        self.infoModel.setHorizontalHeaderLabels(["Key", "Value"])
+        # Initialize the galaxy info model
+        self.galaxyInfoModel=QStandardItemModel(self)
+        self.galaxyInfoModel.setHorizontalHeaderLabels(["Key", "Value"])
 
-        # Initialize the table view
-        self.infoTableView=QTableView(self)
-        self.infoTableView.setModel(self.infoModel)
-        self.infoTableView.verticalHeader().setVisible(False)
-        self.infoTableView.horizontalHeader().setStretchLastSection(True)
-        self.infoTableView.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        # Initialize the galaxy table view
+        self.galaxyInfoTableView=QTableView(self)
+        self.galaxyInfoTableView.setModel(self.galaxyInfoModel)
+        self.galaxyInfoTableView.verticalHeader().setVisible(False)
+        self.galaxyInfoTableView.horizontalHeader().setStretchLastSection(True)
+        self.galaxyInfoTableView.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         
-        # Add the info table view
-        infoGroupboxLayout.addWidget(self.infoTableView, 0, 0, 1, 1)
+        # Add the galaxy info table view
+        galaxyInfoGroupboxLayout.addWidget(self.galaxyInfoTableView, 0, 0, 1, 1)
 
-        # Set the info groupbox layout
-        infoGroupbox.setLayout(infoGroupboxLayout)
+        # Set the galaxy info groupbox layout
+        galaxyInfoGroupbox.setLayout(galaxyInfoGroupboxLayout)
 
-        # Add the info groupbox to tab layout
-        layout.addWidget(infoGroupbox, 0, 0, 1, 1)
+        # Add the galaxy info groupbox to tab layout
+        layout.addWidget(galaxyInfoGroupbox, 0, 0, 1, 1)
+
+        # Initialize the filter info group box
+        filterInfoGroupbox=QGroupBox("Filter")
+        filterInfoGroupbox.setCheckable(False)
+
+        # Initialize the filter info groupbox layout
+        filterInfoGroupboxLayout=QGridLayout()
+
+        # Set column and row stretch
+        filterInfoGroupboxLayout.setColumnStretch(0, 1)
+        filterInfoGroupboxLayout.setRowStretch(0, 1)
+
+        # Initialize the filter info model
+        self.filterInfoModel=QStandardItemModel(self)
+        self.filterInfoModel.setHorizontalHeaderLabels(["Key", "Value"])
+
+        # Initialize the filter table view
+        self.filterInfoTableView=QTableView(self)
+        self.filterInfoTableView.setModel(self.filterInfoModel)
+        self.filterInfoTableView.verticalHeader().setVisible(False)
+        self.filterInfoTableView.horizontalHeader().setStretchLastSection(True)
+        self.filterInfoTableView.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        
+        # Add the filter info table view
+        filterInfoGroupboxLayout.addWidget(self.filterInfoTableView, 0, 0, 1, 1)
+
+        # Set the filter info groupbox layout
+        filterInfoGroupbox.setLayout(filterInfoGroupboxLayout)
+
+        # Add the filter info groupbox to tab layout
+        layout.addWidget(filterInfoGroupbox, 1, 0, 1, 1)
 
         # Initialize info tab widget
         self.infoTab=QWidget()
@@ -174,21 +205,40 @@ class infoToolbar(QToolBar):
         # Return
         return
     
-    def updateInfoModel(self, info: dict):
+    def updateGalaxyInfoModel(self, info: dict):
         """
-        Updates the items of the info model
+        Updates the items of the galaxy info model
         """
 
-        # Clear the info model
-        self.infoModel.clear()
+        # Clear the galaxy info model
+        self.galaxyInfoModel.clear()
 
-        # Add the info as items to the info model
+        # Add the info as items to the galaxy info model
         if(info):
-            self.infoModel.appendColumn([QStandardItem(str(key)) for key in info.keys()])
-            self.infoModel.appendColumn([QStandardItem(str(value)) for value in info.values()])
+            self.galaxyInfoModel.appendColumn([QStandardItem(str(key)) for key in info.keys()])
+            self.galaxyInfoModel.appendColumn([QStandardItem(str(value)) for value in info.values()])
         
         # Set the horizontal header labels
-        self.infoModel.setHorizontalHeaderLabels(["Key", "Value"])
+        self.galaxyInfoModel.setHorizontalHeaderLabels(["Key", "Value"])
+
+        # Return
+        return
+    
+    def updateFilterInfoModel(self, info: dict):
+        """
+        Updates the items of the filter info model
+        """
+
+        # Clear the filter info model
+        self.filterInfoModel.clear()
+
+        # Add the info as items to the filter info model
+        if(info):
+            self.filterInfoModel.appendColumn([QStandardItem(str(key)) for key in info.keys()])
+            self.filterInfoModel.appendColumn([QStandardItem(str(value)) for value in info.values()])
+        
+        # Set the horizontal header labels
+        self.filterInfoModel.setHorizontalHeaderLabels(["Key", "Value"])
 
         # Return
         return

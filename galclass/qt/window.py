@@ -207,10 +207,10 @@ class MainWindow(QMainWindow):
         self.navigationToolbar.galaxyCombobox.setCurrentIndex(self.igalaxy)
         self.navigationToolbar.galaxyCombobox.blockSignals(False)
 
-        # Update the info model
-        infoOfGalaxy={"Name": self.substrate.fileDict['galaxies'][self.igalaxy]['name'], "Filters": self.substrate.fileDict['galaxies'][self.igalaxy]['filters']}
-        # infoOfGalaxy.update(self.substrate.fileDict['galaxies'][self.igalaxy]['info'])
-        self.infoToolbar.updateInfoModel(infoOfGalaxy)
+        # Update the galaxy info model
+        galaxyInfo={"Name": self.substrate.fileDict['galaxies'][self.igalaxy]['name'], "Filters": self.substrate.fileDict['galaxies'][self.igalaxy]['filters']}
+        # galaxyInfo.update(self.substrate.fileDict['galaxies'][self.igalaxy]['info'])
+        self.infoToolbar.updateGalaxyInfoModel(galaxyInfo)
 
         # Update the filter combobox
         self.navigationToolbar.updateFilterCombobox(self.substrate.fileDict['galaxies'][self.igalaxy]['filters'])
@@ -246,6 +246,11 @@ class MainWindow(QMainWindow):
         self.navigationToolbar.filterCombobox.blockSignals(True)
         self.navigationToolbar.filterCombobox.setCurrentIndex(self.ifilter)
         self.navigationToolbar.filterCombobox.blockSignals(False)
+
+        # Update the filter info model
+        filterInfo={"Name": self.substrate.fileDict['galaxies'][self.igalaxy]['filters'][self.ifilter]}
+        # filterInfo.update(self.substrate.fileDict['galaxies'][self.igalaxy]['fileInfo'][self.ifilter])
+        self.infoToolbar.updateFilterInfoModel(filterInfo)
 
         # Determine the path to the filter pdf file
         filePath=os.path.abspath(self.substrate.fileDict['galaxies'][self.igalaxy]['files'][self.ifilter])

@@ -9,7 +9,7 @@ import numpy as np
 from functools import partial
 
 from PyQt6.QtCore import Qt, QTimer
-from PyQt6.QtGui import QStandardItem, QStandardItemModel
+from PyQt6.QtGui import QStandardItem, QStandardItemModel, QKeySequence
 from PyQt6.QtWidgets import QAbstractItemView, QCompleter, QSizePolicy, QComboBox, QLineEdit, QTableView, QMenuBar, QLabel, QWidget, QToolBar, QGridLayout, QGroupBox, QTextEdit, QCheckBox, QTabWidget, QToolButton, QSpacerItem
 
 # Local #
@@ -163,6 +163,7 @@ class categoriesToolbar(QToolBar):
             checkbox.setCheckable(True)
             checkbox.setChecked(False)
             checkbox.setEnabled(self.categoryWidgetsEnabled)
+            checkbox.setShortcut(QKeySequence(subcategory['shortcut']))
             checkbox.stateChanged.connect(partial(self.checkboxToggled, subname, subisAlso, subisNot))
             
             # Append the checkbox and its metadata to the category checkboxes list

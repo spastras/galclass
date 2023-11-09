@@ -9,7 +9,7 @@ from typing import Optional
 import os
 
 from PyQt6.QtCore import QSize, Qt, QUrl
-from PyQt6.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QCloseEvent
+from PyQt6.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QCloseEvent, QKeySequence
 from PyQt6.QtWidgets import QMainWindow, QLayout, QHBoxLayout, QWidget, QStatusBar
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 

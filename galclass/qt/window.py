@@ -209,7 +209,7 @@ class MainWindow(QMainWindow):
 
         # Update the galaxy info model
         galaxyInfo={"Name": self.substrate.fileDict['galaxies'][self.igalaxy]['name'], "Filters": self.substrate.fileDict['galaxies'][self.igalaxy]['filters']}
-        # galaxyInfo.update(self.substrate.fileDict['galaxies'][self.igalaxy]['info'])
+        galaxyInfo.update(self.substrate.fileDict['galaxies'][self.igalaxy]['info'])
         self.infoToolbar.updateGalaxyInfoModel(galaxyInfo)
 
         # Update the filter combobox
@@ -249,7 +249,7 @@ class MainWindow(QMainWindow):
 
         # Update the filter info model
         filterInfo={"Name": self.substrate.fileDict['galaxies'][self.igalaxy]['filters'][self.ifilter]}
-        # filterInfo.update(self.substrate.fileDict['galaxies'][self.igalaxy]['fileInfo'][self.ifilter])
+        filterInfo.update(self.substrate.fileDict['galaxies'][self.igalaxy]['fileInfo'][self.ifilter])
         self.infoToolbar.updateFilterInfoModel(filterInfo)
 
         # Determine the path to the filter pdf file

@@ -394,7 +394,7 @@ class categoriesToolbar(QToolBar):
         # Add the comments text edit
         self.commentsTextEdit=QTextEdit("", self)
         self.commentsTextEdit.setEnabled(self.categoryWidgetsEnabled)
-        commentsGroupboxLayout.addWidget(self.commentsTextEdit, 0, 0, Qt.AlignmentFlag.AlignLeft)
+        commentsGroupboxLayout.addWidget(self.commentsTextEdit, 0, 0)
 
         # Set the comments groupbox layout
         commentsGroupbox.setLayout(commentsGroupboxLayout)

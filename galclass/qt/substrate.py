@@ -12,6 +12,8 @@ import os
 
 from functools import partial
 
+import numpy as np
+
 from PyQt6.QtCore import QSize, QObject, QRunnable, QThreadPool, pyqtSignal, pyqtSlot
 from PyQt6.QtGui import QAction, QKeySequence
 from PyQt6.QtWidgets import QStyle, QCommonStyle, QFileDialog
@@ -108,12 +110,12 @@ class QtSubstrate(QObject):
         self.window=None
 
         # Status
-        self.categoryWidgetsEnabled=False
         self.excludeClassified=True
         self.inputFileLoading=False
         
         # Data
         self.fileDict=None
+        self.classified=None
         self.propertyDict=[]
         self.outputFile=None
 
@@ -212,8 +214,8 @@ class QtSubstrate(QObject):
         # Set metadata
         self.inputFileLoading=True
 
-        # Disable category widgets
-        self.window.categoriesToolbar.toggleCategoryWidgets(False)
+        # Unload the current galaxy
+        self.window.loadGalaxy(None)
 
         # Disable actions
         self.actionSubstrate.setFileActionsEnabled(False)
@@ -264,16 +266,35 @@ class QtSubstrate(QObject):
             self.propertyDict=propertyDict
         else:
             self.__initGalaxyProperties()
+        
+        # Determine which galaxies have been classified
+        self.__determineClassified()
 
         # Notify the window
         self.window.dictUpdated()
 
-        # Enable category widgets
-        self.window.categoriesToolbar.toggleCategoryWidgets(True)
-
         # Enable actions
         self.actionSubstrate.setFileActionsEnabled(True)
         self.actionSubstrate.setNavigationActionsEnabled(True)
+
+        # Return
+        return
+    
+    def __determineClassified(self) -> None:
+        """
+        Determines which galaxies have been classified
+        """
+
+        # Get metadata
+        ngalaxies=len(self.propertyDict['galaxies'])
+
+        # Determine which galaxies have been classified
+        self.classified=np.empty((ngalaxies,), dtype=bool)
+        for igalaxy in range(ngalaxies):
+            if(self.propertyDict['galaxies'][igalaxy]['categories']):
+                self.classified[igalaxy]=True
+            else:
+                self.classified[igalaxy]=False
 
         # Return
         return
@@ -283,23 +304,72 @@ class QtSubstrate(QObject):
         Toggle the loading of only the unclassified galaxies
         """
 
-        # Trigger the exclude classified
+        # Toggle the exclude classified flag
         self.excludeClassified=enabled
 
-        # Load the next non classified galaxy
+        # Trigger the exclusion of classified galaxes
+        self.window.navigationToolbar.triggerClassifiedExclusion()
+
+        # Check whether we need to load a new galaxy
         if(self.excludeClassified):
-            pass
+            # If the currently loaded galaxy is classified, load the next unclassified one
+            if(self.window.igalaxy is not None):
+                if(self.classified[self.window.igalaxy]):
+                    self.switchGalaxy(1)
+        else:
+            # If no galaxy is currently loaded, load the first one
+            if(self.window.igalaxy is None):
+                self.window.loadGalaxy(0, noReadOut=True)
 
         # Return
         return
     
-    def switchGalaxy(self, increment: int) -> None:
+    def switchGalaxy(self, increment: int, noReadOut: bool = False) -> None:
         """
         Switch the currently loaded galaxy
         """
 
         # Switch galaxy
-        self.window.loadGalaxy(self.window.igalaxy+increment)
+        if(self.window.igalaxy is not None):
+
+            # Determine the effective increment
+
+            if(self.excludeClassified):
+                # Check whether there are no more galaxies to load
+                if(np.all(self.classified)):
+                    self.window.loadGalaxy(None, noReadOut=noReadOut)
+                    return
+                # Find the next unclassified galaxy
+                ifirstUnclassified=self.window.igalaxy+increment
+                while(True):
+                    if(ifirstUnclassified==self.window.ngalaxies):
+                        ifirstUnclassified=0
+                    elif(ifirstUnclassified==-1):
+                        ifirstUnclassified=self.window.ngalaxies-1
+                    if(not self.classified[ifirstUnclassified]):
+                        break
+                    else:
+                        ifirstUnclassified=ifirstUnclassified+increment
+                incrementEffective=ifirstUnclassified-self.window.igalaxy
+            else:
+                incrementEffective=increment
+
+            # Determine the index of the galaxy to be loaded
+            igalaxy=self.window.igalaxy+incrementEffective
+        
+            # Evaluate the index of the galaxy
+            if(igalaxy==self.window.ngalaxies):
+                igalaxy=0
+            elif(igalaxy==-1):
+                igalaxy=self.window.ngalaxies-1
+        
+            # Load the galaxy
+            self.window.loadGalaxy(igalaxy, noReadOut=noReadOut)
+
+            # Check whether no galaxy should have been loaded
+            if(self.excludeClassified):
+                if(np.all(self.classified)):
+                    self.window.loadGalaxy(None, noReadOut=noReadOut)
 
         # Return
         return
@@ -310,7 +380,16 @@ class QtSubstrate(QObject):
         """
 
         # Switch filter
-        self.window.loadFilter(self.window.ifilter+increment)
+        if(self.window.ifilter is not None):
+            # Determine the index of the filter to be loaded
+            ifilter=self.window.ifilter+increment
+            # Evaluate the index of the filter
+            if(ifilter==self.window.nfilters):
+                ifilter=0
+            elif(ifilter==-1):
+                ifilter=self.window.nfilters-1
+            # Load the filter
+            self.window.loadFilter(ifilter)
 
         # Return
         return
@@ -358,6 +437,12 @@ class QtSubstrate(QObject):
 
         # Write the property dictionary to file
         writeJSONFile(self.outputFile, self.propertyDict)
+
+        # Determine whether the galaxy has been classified
+        if(categories):
+            self.classified[igalaxy]=True
+        else:
+            self.classified[igalaxy]=False
 
         # Return
         return
@@ -488,22 +573,24 @@ class QtActionSubstrate(QObject):
         # Enable/Disable file actions
         for action in self.fileActions:
             action.setEnabled(enabled)
-            for object in action.associatedObjects():
-                object.setEnabled(enabled)
 
         # Return
         return
     
-    def setNavigationActionsEnabled(self, enabled: bool):
+    def setNavigationActionsEnabled(self, enabled: bool, loadOnly: bool = False):
         """
         Enable/Disable the navigation actions
         """
 
+        # Determine the navigation actions to be enabled/disabled
+        if(loadOnly):
+            navigationActions=self.navigationActions[1:]
+        else:
+            navigationActions=self.navigationActions
+
         # Enable/Disable navigation actions
-        for action in self.navigationActions:
+        for action in navigationActions:
             action.setEnabled(enabled)
-            for object in action.associatedObjects():
-                object.setEnabled(enabled)
 
         # Return
         return

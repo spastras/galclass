@@ -40,9 +40,9 @@ class MainWindow(QMainWindow):
 
         # Initialize attributes
         self.ngalaxies=0
-        self.igalaxy=0
+        self.igalaxy=None
         self.nfilters=0
-        self.ifilter=0
+        self.ifilter=None
 
         # Call super().__init__
         super().__init__()
@@ -117,10 +117,23 @@ class MainWindow(QMainWindow):
         </html>
         """
         self.defaultHtml=self.defaultHtml.replace("BACKGROUND_IMAGE_PATH", 'file://'+os.path.dirname(os.path.abspath(__file__))+'/../resources/mpe-mpa.png')
-        self.webView.setHtml(self.defaultHtml, baseUrl=QUrl('file://'))
+
+        # Load the default page
+        self.__loadDefaultPage()
     
         # Add the web view to the layout
         layout.addWidget(self.webView)
+
+        # Return
+        return
+    
+    def __loadDefaultPage(self) -> None:
+        """
+        Loads the default html page
+        """
+
+        # Load the default html page
+        self.webView.setHtml(self.defaultHtml, baseUrl=QUrl('file://'))
 
         # Return
         return
@@ -165,98 +178,146 @@ class MainWindow(QMainWindow):
         # Update the galaxy model
         self.navigationToolbar.updateGalaxyModel([self.substrate.fileDict['galaxies'][igalaxy]['name'] for igalaxy in range(self.ngalaxies)])
 
+        # Trigger the exclusion of classified galaxies
+        self.navigationToolbar.triggerClassifiedExclusion()
+
         # Load the first galaxy of the file dictionary
-        self.loadGalaxy(0, noReadOut=True)
+        self.loadGalaxy(self.ngalaxies-1, noReadOut=True)
+        self.substrate.switchGalaxy(1, noReadOut=True)
 
         # Return
         return
     
-    def loadGalaxy(self, igalaxy: int, noReadOut: bool = False):
+    def loadGalaxy(self, igalaxy: Optional[int] = None, noReadOut: bool = False):
         """
         Load the galaxy with the specified ID
 
         Parameters
         ----------
-        igalaxy : int
-            The ID of the galaxy to load
+        igalaxy : int, optional
+            The ID of the galaxy to load (default is None)
         noReadOut : bool, optional
             Should we skip the reading out of the properties of the current galaxy? (default is False)
         """
 
         # Read out the properties of the current galaxy
         if(not noReadOut):
-            self.substrate.updateGalaxyProperties(self.igalaxy, *self.categoriesToolbar.readOut())
+            if(self.igalaxy is not None):
+                self.substrate.updateGalaxyProperties(self.igalaxy, *self.categoriesToolbar.readOut())
+                self.navigationToolbar.triggerGalaxyExclusion(self.igalaxy)
+        
+        # Check whether no galaxy is to be loaded
 
-        # Evaluate the galaxy ID
-        if(self.ngalaxies==0):
-            return
-        elif(igalaxy==self.ngalaxies):
-            igalaxy=0
-        elif(igalaxy==-1):
-            igalaxy=self.ngalaxies-1
+        if(igalaxy is None):
 
-        # Update the current galaxy ID
-        self.igalaxy=igalaxy
-        self.nfilters=len(self.substrate.fileDict['galaxies'][self.igalaxy]['filters'])
+            # Disable navigation and category controls
+            if(self.igalaxy is not None):
+                # Disable the navigation actions
+                self.substrate.actionSubstrate.setNavigationActionsEnabled(False, loadOnly=True)
+                # Disable the category widgets
+                self.categoriesToolbar.toggleCategoryWidgets(False)
 
-        # Clear the categories checkboxes
-        self.categoriesToolbar.clear(categories=self.substrate.propertyDict['galaxies'][self.igalaxy]['categories'], comments=self.substrate.propertyDict['galaxies'][self.igalaxy]['comments'])
+            # Update the current galaxy ID
+            self.igalaxy=igalaxy
+            self.nfilters=0
 
-        # Set the current index of the galaxy combobox
-        self.navigationToolbar.galaxyCombobox.blockSignals(True)
-        self.navigationToolbar.galaxyCombobox.setCurrentIndex(self.igalaxy)
-        self.navigationToolbar.galaxyCombobox.blockSignals(False)
+            # Clear the categories checkboxes
+            self.categoriesToolbar.clear()
 
-        # Update the galaxy info model
-        galaxyInfo={"Name": self.substrate.fileDict['galaxies'][self.igalaxy]['name'], "Filters": self.substrate.fileDict['galaxies'][self.igalaxy]['filters']}
-        galaxyInfo.update(self.substrate.fileDict['galaxies'][self.igalaxy]['info'])
-        self.infoToolbar.updateGalaxyInfoModel(galaxyInfo)
+            # Clear the current index of the galaxy combobox
+            self.navigationToolbar.galaxyCombobox.blockSignals(True)
+            self.navigationToolbar.galaxyCombobox.setCurrentIndex(-1)
+            self.navigationToolbar.galaxyCombobox.blockSignals(False)
 
-        # Update the filter combobox
-        self.navigationToolbar.updateFilterCombobox(self.substrate.fileDict['galaxies'][self.igalaxy]['filters'])
+            # Clear the galaxy info model
+            self.infoToolbar.updateGalaxyInfoModel({})
 
-        # Load the first filter of the galaxy
-        self.loadFilter(0)
+            # Clear the filter combobox
+            self.navigationToolbar.updateFilterCombobox({})
+
+            # Load no filter
+            self.loadFilter(None)
+        
+        else:
+
+            # Enable navigation and category controls
+            if(self.igalaxy is None):
+                # Enable the navigation actions
+                self.substrate.actionSubstrate.setNavigationActionsEnabled(True, loadOnly=True)
+                # Enable the category widgets
+                self.categoriesToolbar.toggleCategoryWidgets(True)
+
+            # Update the current galaxy ID
+            self.igalaxy=igalaxy
+            self.nfilters=len(self.substrate.fileDict['galaxies'][self.igalaxy]['filters'])
+
+            # Clear the categories checkboxes
+            self.categoriesToolbar.clear(categories=self.substrate.propertyDict['galaxies'][self.igalaxy]['categories'], comments=self.substrate.propertyDict['galaxies'][self.igalaxy]['comments'])
+
+            # Set the current index of the galaxy combobox
+            self.navigationToolbar.galaxyCombobox.blockSignals(True)
+            self.navigationToolbar.galaxyCombobox.setCurrentIndex(self.igalaxy)
+            self.navigationToolbar.galaxyCombobox.blockSignals(False)
+
+            # Update the galaxy info model
+            galaxyInfo={"Name": self.substrate.fileDict['galaxies'][self.igalaxy]['name'], "Filters": self.substrate.fileDict['galaxies'][self.igalaxy]['filters']}
+            galaxyInfo.update(self.substrate.fileDict['galaxies'][self.igalaxy]['info'])
+            self.infoToolbar.updateGalaxyInfoModel(galaxyInfo)
+
+            # Update the filter combobox
+            self.navigationToolbar.updateFilterCombobox(self.substrate.fileDict['galaxies'][self.igalaxy]['filters'])
+
+            # Load the first filter of the galaxy
+            self.loadFilter(0)
 
         # Return
         return
     
-    def loadFilter(self, ifilter: int):
+    def loadFilter(self, ifilter: Optional[int] = None):
         """
         Load the filter with the specified ID
 
         Parameters
         ----------
-        ifilter : int
-            The ID of the filter to load
+        ifilter : int, optional
+            The ID of the filter to load (default is None)
         """
-
-        # Evaluate the filter ID
-        if(self.nfilters==0):
-            return
-        elif(ifilter==self.nfilters):
-            ifilter=0
-        elif(ifilter==-1):
-            ifilter=self.nfilters-1
 
         # Update the current filter ID
         self.ifilter=ifilter
 
-        # Set the current index of the filter combobox
-        self.navigationToolbar.filterCombobox.blockSignals(True)
-        self.navigationToolbar.filterCombobox.setCurrentIndex(self.ifilter)
-        self.navigationToolbar.filterCombobox.blockSignals(False)
+        # Check whether no filter is to be loaded
 
-        # Update the filter info model
-        filterInfo={"Name": self.substrate.fileDict['galaxies'][self.igalaxy]['filters'][self.ifilter]}
-        filterInfo.update(self.substrate.fileDict['galaxies'][self.igalaxy]['fileInfo'][self.ifilter])
-        self.infoToolbar.updateFilterInfoModel(filterInfo)
+        if(ifilter is None):
 
-        # Determine the path to the filter pdf file
-        filePath=os.path.abspath(self.substrate.fileDict['galaxies'][self.igalaxy]['files'][self.ifilter])
+            # Clear the current index of the filter combobox
+            self.navigationToolbar.filterCombobox.blockSignals(True)
+            self.navigationToolbar.filterCombobox.setCurrentIndex(-1)
+            self.navigationToolbar.filterCombobox.blockSignals(False)
 
-        # Load the filter pdf in the web view
-        self.webView.setUrl(QUrl("file://"+filePath.replace('\\', '/')))
+            # Clear the filter info model
+            self.infoToolbar.updateFilterInfoModel({})
+
+            # Load the default page in the web view
+            self.__loadDefaultPage()
+
+        else:
+
+            # Set the current index of the filter combobox
+            self.navigationToolbar.filterCombobox.blockSignals(True)
+            self.navigationToolbar.filterCombobox.setCurrentIndex(self.ifilter)
+            self.navigationToolbar.filterCombobox.blockSignals(False)
+
+            # Update the filter info model
+            filterInfo={"Name": self.substrate.fileDict['galaxies'][self.igalaxy]['filters'][self.ifilter]}
+            filterInfo.update(self.substrate.fileDict['galaxies'][self.igalaxy]['fileInfo'][self.ifilter])
+            self.infoToolbar.updateFilterInfoModel(filterInfo)
+
+            # Determine the path to the filter pdf file
+            filePath=os.path.abspath(self.substrate.fileDict['galaxies'][self.igalaxy]['files'][self.ifilter])
+
+            # Load the filter pdf in the web view
+            self.webView.setUrl(QUrl("file://"+filePath.replace('\\', '/')))
 
         # Return
         return

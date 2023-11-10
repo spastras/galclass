@@ -657,6 +657,40 @@ class navigationToolbar(QToolBar):
         # Return
         return
     
+    def triggerClassifiedExclusion(self):
+        """
+        Triggers the exclusion of classified galaxies
+        """
+
+        if(self.substrate.excludeClassified):
+            # Enable the unclassified galaxies and disbale the classified ones
+            for igalaxy in range(self.parentWindow.ngalaxies):
+                self.galaxyCombobox.model().item(igalaxy).setEnabled(not self.substrate.classified[igalaxy])
+        else:
+            # Enable all galaxies
+            for igalaxy in range(self.parentWindow.ngalaxies):
+                self.galaxyCombobox.model().item(igalaxy).setEnabled(True)
+
+        # Return
+        return
+    
+    def triggerGalaxyExclusion(self, igalaxy: int):
+        """
+        Trigger the exclusion of the specified galaxy
+
+        Parameters
+        ----------
+        igalaxy : int
+            The ID of the galaxy the exclusion of which is to be triggered
+        """
+
+        # Trigger the exclusion of the galaxy
+        if(self.substrate.excludeClassified):
+            self.galaxyCombobox.model().item(igalaxy).setEnabled(not self.substrate.classified[igalaxy])
+
+        # Return
+        return
+    
     def performGalaxySearch(self):
         """
         Performs the search for the galaxy specified in the galaxy line edit

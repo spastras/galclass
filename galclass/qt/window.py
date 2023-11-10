@@ -213,7 +213,7 @@ class MainWindow(QMainWindow):
             # Disable navigation and category controls
             if(self.igalaxy is not None):
                 # Disable the navigation actions
-                self.substrate.actionSubstrate.setNavigationActionsEnabled(False, loadOnly=True)
+                self.substrate.actionSubstrate.setLoadNavigationActionsEnabled(False)
                 # Disable the category widgets
                 self.categoriesToolbar.toggleCategoryWidgets(False)
 
@@ -243,7 +243,7 @@ class MainWindow(QMainWindow):
             # Enable navigation and category controls
             if(self.igalaxy is None):
                 # Enable the navigation actions
-                self.substrate.actionSubstrate.setNavigationActionsEnabled(True, loadOnly=True)
+                self.substrate.actionSubstrate.setLoadNavigationActionsEnabled(True)
                 # Enable the category widgets
                 self.categoriesToolbar.toggleCategoryWidgets(True)
 

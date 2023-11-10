@@ -169,8 +169,9 @@ class QtSubstrate(QObject):
         # Enable the file actions
         self.actionSubstrate.setFileActionsEnabled(True)
 
-        # Enable the navigation actions
-        self.actionSubstrate.setNavigationActionsEnabled(False)
+        # Disable the navigation actions
+        self.actionSubstrate.setExclusionNavigationActionEnabled(False)
+        self.actionSubstrate.setLoadNavigationActionsEnabled(False)
 
         # Return
         return
@@ -219,7 +220,7 @@ class QtSubstrate(QObject):
 
         # Disable actions
         self.actionSubstrate.setFileActionsEnabled(False)
-        self.actionSubstrate.setNavigationActionsEnabled(False)
+        self.actionSubstrate.setExclusionNavigationActionEnabled(False)
 
         # Determine the output filename
         outputFile=inputFile
@@ -275,7 +276,7 @@ class QtSubstrate(QObject):
 
         # Enable actions
         self.actionSubstrate.setFileActionsEnabled(True)
-        self.actionSubstrate.setNavigationActionsEnabled(True)
+        self.actionSubstrate.setExclusionNavigationActionEnabled(True)
 
         # Return
         return
@@ -577,19 +578,24 @@ class QtActionSubstrate(QObject):
         # Return
         return
     
-    def setNavigationActionsEnabled(self, enabled: bool, loadOnly: bool = False):
+    def setExclusionNavigationActionEnabled(self, enabled: bool):
         """
-        Enable/Disable the navigation actions
+        Enable/Disable the exclusion navigation action
         """
 
-        # Determine the navigation actions to be enabled/disabled
-        if(loadOnly):
-            navigationActions=self.navigationActions[1:]
-        else:
-            navigationActions=self.navigationActions
+        # Enable/Disable the exclusion navigation action
+        self.navigationActions[0].setEnabled(enabled)
 
-        # Enable/Disable navigation actions
-        for action in navigationActions:
+        # Return
+        return
+    
+    def setLoadNavigationActionsEnabled(self, enabled: bool):
+        """
+        Enable/Disable the load navigation actions
+        """
+
+        # Enable/Disable the load navigation actions
+        for action in self.navigationActions[1:]:
             action.setEnabled(enabled)
 
         # Return

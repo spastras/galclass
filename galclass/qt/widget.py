@@ -42,6 +42,9 @@ class MenuBar(QMenuBar):
         # Initialize file menu
         self.__initFileMenu()
 
+        # Initialize view menu
+        self.__initViewMenu()
+
         # Initialize navigation menu
         self.__initNavigationMenu()
 
@@ -58,6 +61,22 @@ class MenuBar(QMenuBar):
 
         # Add file actions
         self.fileMenu.addActions(self.substrate.actionSubstrate.fileActions[0:1])
+
+        # Return
+        return
+    
+    def __initViewMenu(self):
+        """
+        Initializes the "View" menu
+        """
+
+        # Add view menu
+        self.viewMenu=self.addMenu("&View")
+
+        # Add view actions
+        self.viewMenu.addAction(self.parentWindow.navigationToolbar.toggleViewAction())
+        self.viewMenu.addAction(self.parentWindow.infoToolbar.toggleViewAction())
+        self.viewMenu.addAction(self.parentWindow.categoriesToolbar.toggleViewAction())
 
         # Return
         return

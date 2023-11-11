@@ -148,8 +148,10 @@ class MainWindow(QMainWindow):
         self.infoToolbar=infoToolbar(self, self.substrate)
         self.categoriesToolbar=categoriesToolbar(self, self.substrate)
         
-        # Add toggle toolbar shortcut
-        # self.categoriesToolbar.toggleViewAction().setShortcut(QKeySequence('Ctrl+C'))
+        # Add toggle toolbar shortcuts
+        # self.navigationToolbar.toggleViewAction().setShortcut(QKeySequence('Ctrl+n'))
+        # self.infoToolbar.toggleViewAction().setShortcut(QKeySequence('Ctrl+i'))
+        # self.categoriesToolbar.toggleViewAction().setShortcut(QKeySequence('Ctrl+c'))
         
         # Attach the toolbars
         self.addToolBar(Qt.ToolBarArea.TopToolBarArea, self.navigationToolbar)

@@ -8,14 +8,15 @@ from typing import Optional
 
 import os
 
-from PyQt6.QtCore import QSize, Qt, QUrl
+from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QCloseEvent, QKeySequence
 from PyQt6.QtWidgets import QMainWindow, QLayout, QHBoxLayout, QWidget, QStatusBar
-from PyQt6.QtWebEngineWidgets import QWebEngineView
+from PyQt6.QtPdf import QPdfDocument
+from PyQt6.QtPdfWidgets import QPdfView
 
 # Local #
 
-from .widget import MenuBar, navigationToolbar, infoToolbar, categoriesToolbar
+from .widget import pdfView, MenuBar, navigationToolbar, infoToolbar, categoriesToolbar
 
 ###########
 # Classes #
@@ -63,8 +64,8 @@ class MainWindow(QMainWindow):
         widget.setLayout(layout)
         self.setCentralWidget(widget)
 
-        # Initialize the web view
-        self.__initWebView(layout=layout)
+        # Initialize the pdf view
+        self.__initPdfView(layout)
 
         # Initialize toolbars
         self.__initToolbars()
@@ -83,57 +84,25 @@ class MainWindow(QMainWindow):
         # Return
         return
     
-    def __initWebView(self, layout: Optional[QLayout] = None):
+    def __initPdfView(self, layout: QLayout):
         """
-        Initializes the Qt Web View Engine and sets 
+        Initializes the Qt PDF View
         """
 
-        # Initialize the web view
-        self.webView=QWebEngineView()
-        # self.webView.setAttribute(Qt.WidgetAttribute.WA_AcceptTouchEvents, False)
-        self.webView.setContextMenuPolicy(Qt.ContextMenuPolicy.NoContextMenu)
-        self.webView.settings().setAttribute(self.webView.settings().WebAttribute.NavigateOnDropEnabled, False)
-        self.webView.settings().setAttribute(self.webView.settings().WebAttribute.NavigateOnDropEnabled, False)
-        self.webView.settings().setAttribute(self.webView.settings().WebAttribute.NavigateOnDropEnabled, False)
-        self.webView.settings().setAttribute(self.webView.settings().WebAttribute.PluginsEnabled, True)
-        self.webView.settings().setAttribute(self.webView.settings().WebAttribute.PdfViewerEnabled, True)
+        # Initialize the pdf document
+        self.pdfDocument=QPdfDocument(self)
 
-        # Set the default page of the web view
-        self.defaultHtml="""
-        <html>
-            <head>
-                <style>
-                    html {
-                        background: url("BACKGROUND_IMAGE_PATH") no-repeat center center fixed;
-                        -webkit-background-size: cover;
-                        -moz-background-size: cover;
-                        -o-background-size: cover;
-                        background-size: cover;
-                        background-color: #000000;
-                    }
-                </style>
-            </head>
-            <body></body>
-        </html>
-        """
-        self.defaultHtml=self.defaultHtml.replace("BACKGROUND_IMAGE_PATH", 'file://'+os.path.dirname(os.path.abspath(__file__))+'/../resources/mpe-mpa.png')
+        # Initialize the pdf view
+        self.pdfView=pdfView(self)
+        self.pdfView.setDocument(self.pdfDocument)
+        self.pdfView.setZoomMode(QPdfView.ZoomMode.FitInView)
+        self.pdfView.setPageMode(QPdfView.PageMode.SinglePage)
 
-        # Load the default page
-        self.__loadDefaultPage()
+        # Load no pdf document
+        self.pdfDocument.load(None)
     
-        # Add the web view to the layout
-        layout.addWidget(self.webView)
-
-        # Return
-        return
-    
-    def __loadDefaultPage(self) -> None:
-        """
-        Loads the default html page
-        """
-
-        # Load the default html page
-        self.webView.setHtml(self.defaultHtml, baseUrl=QUrl('file://'))
+        # Add the pdf view to the layout
+        layout.addWidget(self.pdfView)
 
         # Return
         return
@@ -300,8 +269,8 @@ class MainWindow(QMainWindow):
             # Clear the filter info model
             self.infoToolbar.updateFilterInfoModel({})
 
-            # Load the default page in the web view
-            self.__loadDefaultPage()
+            # Load no pdf document
+            self.pdfDocument.load(None)
 
         else:
 
@@ -318,8 +287,8 @@ class MainWindow(QMainWindow):
             # Determine the path to the filter pdf file
             filePath=os.path.abspath(self.substrate.fileDict['galaxies'][self.igalaxy]['files'][self.ifilter])
 
-            # Load the filter pdf in the web view
-            self.webView.setUrl(QUrl("file://"+filePath.replace('\\', '/')))
+            # Load the filter pdf in the pdf view
+            self.pdfDocument.load(filePath)
 
         # Return
         return

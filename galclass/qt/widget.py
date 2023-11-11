@@ -4,19 +4,51 @@
 
 # System #
 
-import numpy as np
+from typing import Optional
+
+import os
 
 from functools import partial
 
+import numpy as np
+
 from PyQt6.QtCore import Qt, QTimer
-from PyQt6.QtGui import QStandardItem, QStandardItemModel, QKeySequence
+from PyQt6.QtGui import QStandardItem, QStandardItemModel, QKeySequence, QPixmap, QBrush, QPalette, QResizeEvent
 from PyQt6.QtWidgets import QAbstractItemView, QCompleter, QSizePolicy, QComboBox, QLineEdit, QTableView, QMenuBar, QLabel, QWidget, QToolBar, QGridLayout, QGroupBox, QTextEdit, QCheckBox, QTabWidget, QToolButton, QSpacerItem
+from PyQt6.QtPdfWidgets import QPdfView
 
 # Local #
 
 ###########
 # Classes #
 ###########
+
+#**********#
+# PDF view #
+#**********#
+
+class pdfView(QPdfView):
+    """
+    A widget for the viewing of PDF files
+    """
+
+    def __init__(self, parent: Optional[QWidget] = None):
+        # Call super().__init__
+        super().__init__(parent)
+        # Initialize the pixmap
+        self.pixmap=QPixmap(os.path.dirname(os.path.abspath(__file__))+'/../resources/mpe-mpa.png')
+        # Return
+        return
+
+    def resizeEvent(self, event: Optional[QResizeEvent] = None) -> None:
+        # Produce the scaled brush
+        brush=QBrush(self.pixmap.scaled(self.size(), Qt.AspectRatioMode.IgnoreAspectRatio))
+        # Update the palette
+        palette=self.palette()
+        palette.setBrush(QPalette.ColorRole.Dark, brush)
+        self.setPalette(palette)
+        # Return
+        return super().resizeEvent(event)
 
 #**********#
 # Menu bar #

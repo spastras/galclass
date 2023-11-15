@@ -289,6 +289,9 @@ class MainWindow(QMainWindow):
 
             # Load the filter pdf in the pdf view
             self.pdfDocument.load(filePath)
+        
+        # Set the focus to the pdf view
+        self.pdfView.setFocus()
 
         # Return
         return

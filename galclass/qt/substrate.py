@@ -226,7 +226,9 @@ class QtSubstrate(QObject):
         outputFile=inputFile
         inputFileSuffixes=[".json", ".txt", ".lst", ".dat"]
         for inputFileSuffix in inputFileSuffixes:
-            outputFile=outputFile.removesuffix(inputFileSuffix)
+            # outputFile=outputFile.removesuffix(inputFileSuffix)
+            if(outputFile.endswith(inputFileSuffix)):
+                outputFile=outputFile[:-len(inputFileSuffix)]
         outputFile=outputFile+self.outputFileSuffix
 
         # Initialize the input file loader

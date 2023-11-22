@@ -1,8 +1,8 @@
 # galclass
 
-[![PyQt6 >=6.6.0](https://img.shields.io/badge/PyQt6->=6.6.0-red.svg)](https://pypi.org/project/PyQt6/6.6.0/)
-[![numpy >=1.23.0](https://img.shields.io/badge/numpy->=1.23.0-green.svg)](https://pypi.org/project/numpy/1.23.0/)
-[![Python >=3.9.0](https://img.shields.io/badge/Python->=3.9.0-blue.svg)](https://www.python.org/downloads/release/python-390/)
+[![PyQt6 >=6.4.0](https://img.shields.io/badge/PyQt6->=6.4.0-red.svg)](https://pypi.org/project/PyQt6/6.4.0/)
+[![numpy >=1.13.0](https://img.shields.io/badge/numpy->=1.13.0-green.svg)](https://pypi.org/project/numpy/1.13.0/)
+[![Python >=3.6.1](https://img.shields.io/badge/Python->=3.6.1-blue.svg)](https://www.python.org/downloads/release/python-361/)
 
 ## Description
 

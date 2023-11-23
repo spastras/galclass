@@ -29,7 +29,7 @@ class classification():
     A class for the handling of a classification of a sample
     """
 
-    def __init__(self, items: Iterable, itemCategories: Iterable, categories: Iterable) -> None:
+    def __init__(self, items: Iterable, itemCategories: Iterable, itemComments: Iterable, categories: Iterable) -> None:
         """
         Constructor
         """
@@ -37,6 +37,7 @@ class classification():
         # Evaluate arguments
         self.items=items
         self.itemCategories=itemCategories
+        self.itemComments=itemComments
         self.categories=categories
 
         # Get metadata
@@ -102,7 +103,20 @@ class classification():
         """
 
         # Return
-        return self.categories[self.__getItemID(item)]
+        return self.itemCategories[self.__getItemID(item)]
+    
+    def getCommentsOn(self, item: str) -> list:
+        """
+        Return the comments on the specified item
+
+        Parameters
+        ----------
+        item : str
+            The item the comments on which to return
+        """
+
+        # Return
+        return self.itemComments[self.__getItemID(item)]
     
     def getNumberOf(self, category: str) -> int:
         """
@@ -213,10 +227,13 @@ class combinedClassification(classification):
 
         # Combine the classifications
 
+        # Initialize the comments on each item
+        self.comments=[[] for iitem in range(self.nitems)]
+
         # Initialize the times an items falls in each category
         self.ntimesInCategory=np.zeros((self.nitems, self.ncategories), dtype=int)
 
-        # Determine the number of times each item falls in each category
+        # Determine the comments and number of times each item falls in each category
         for classification in classifications:
             for iitem in range(classification.nitems):
                 ilocalItem=self._classification__getItemID(classification.items[iitem])
@@ -224,6 +241,8 @@ class combinedClassification(classification):
                 for itemCategory in itemCategories:
                     ilocalCategory=self._classification__getCategoryID(itemCategory)
                     self.ntimesInCategory[ilocalItem, ilocalCategory]=self.ntimesInCategory[ilocalItem, ilocalCategory]+1
+                itemComments=classification.itemComments[iitem]
+                self.comments[ilocalItem].append(itemComments)
 
         # Return
         return
@@ -242,6 +261,19 @@ class combinedClassification(classification):
 
         # Return
         return self.categories[self.ntimesInCategory[self._classification__getItemID(item),:]>=threshold]
+    
+    def getCommentsOn(self, item: str) -> list:
+        """
+        Return the comments on the specified item
+
+        Parameters
+        ----------
+        item : str
+            The item the comments on which to return
+        """
+
+        # Return
+        return self.comments[self.__getItemID(item)]
     
     def getNumberOf(self, category: str, threshold: int = 1) -> int:
         """
@@ -385,7 +417,7 @@ def readClassifications(files: list, categories: list, combine: bool = False) ->
             fileComments.append(fileClassification['galaxies'][igalaxy]['comments'])
 
         # Initialize the classification
-        classifications.append(classification(fileNames, fileCategories, categories))
+        classifications.append(classification(fileNames, fileCategories, fileComments, categories))
 
     # Return
     return classifications

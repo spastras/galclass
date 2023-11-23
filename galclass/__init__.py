@@ -11,3 +11,6 @@ __version__="0.1b1"
 # Local #
 
 from .qt import *
+from .misc import *
+from .fileio import *
+from .analysis import *

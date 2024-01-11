@@ -4,6 +4,7 @@
 
 # System #
 
+import os
 import json
 
 # Local #
@@ -34,7 +35,7 @@ def readJSONFile(inputFile: str, quiet: bool = False) -> dict:
         Console.pushJob("Reading JSON file...")
     
     # Open file for reading
-    file=open(inputFile, mode='r')
+    file=open(os.path.expanduser(inputFile), mode='r')
 
     # Read the JSON data of the file
     data=json.load(file)
@@ -68,7 +69,7 @@ def writeJSONFile(outputFile: str, data: dict, indent: int = 4, quiet: bool = Fa
         Console.pushJob("Writing output file...")
     
     # Open file for writing
-    file=open(outputFile, mode='w')
+    file=open(os.path.expanduser(outputFile), mode='w')
 
     # Write the JSON data to the file
     json.dump(data, file, indent=indent)

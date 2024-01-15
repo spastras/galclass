@@ -1,7 +1,7 @@
 {
     "categories": [
         {
-            "name": "Compact-Spheroidal",
+            "name": "Spheroidal",
             "isAlso": [],
             "isNot": ["Disk", "Interacting/Merger", "Undefined", "Lens System"],
             "shortcut": "1",
@@ -10,7 +10,7 @@
         {
             "name": "Disk",
             "isAlso": [],
-            "isNot": ["Compact-Spheroidal", "Interacting/Merger", "Undefined", "Lens System"],
+            "isNot": ["Spheroidal", "Interacting/Merger", "Undefined", "Lens System"],
             "shortcut": "2",
             "categories": [
                 {
@@ -53,14 +53,14 @@
         {
             "name": "Interacting/Merger",
             "isAlso": [],
-            "isNot": ["Disk", "Compact-Spheroidal", "Undefined", "Lens System"],
+            "isNot": ["Disk", "Spheroidal", "Undefined", "Lens System"],
             "shortcut": "8",
             "categories": []
         },
         {
             "name": "Undefined",
             "isAlso": [],
-            "isNot": ["Disk", "Compact-Spheroidal", "Interacting/Merger", "Lens System"],
+            "isNot": ["Disk", "Spheroidal", "Interacting/Merger", "Lens System"],
             "shortcut": "9",
             "categories": []
         },
@@ -74,7 +74,7 @@
         {
             "name": "Lens System",
             "isAlso": [],
-            "isNot": ["Disk", "Compact-Spheroidal", "Interacting/Merger", "Undefined"],
+            "isNot": ["Disk", "Spheroidal", "Interacting/Merger", "Undefined"],
             "shortcut": "",
             "categories": []
         }

@@ -8,6 +8,8 @@ from typing import Optional
 
 import os
 
+import numpy as np
+
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QCloseEvent, QKeySequence
 from PyQt6.QtWidgets import QMainWindow, QLayout, QHBoxLayout, QWidget, QStatusBar
@@ -49,7 +51,7 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         # Set window title
-        self.setWindowTitle("galclass")
+        self.__updateWindowTitle()
 
         # Set minimum size
         self.setMinimumSize(QSize(1024, 768))
@@ -135,6 +137,27 @@ class MainWindow(QMainWindow):
         # Return
         return
     
+    def __updateWindowTitle(self) -> None:
+        """
+        Updates the title of the window
+        """
+
+        # Determine the title of the window
+        windowTitle="galclass"
+        if((self.substrate.categoriesDict['categories'])and(self.substrate.classified is not None)):
+            windowTitle=windowTitle+' '
+            windowTitle=windowTitle+'('
+            windowTitle=windowTitle+str(np.sum(self.substrate.classified, dtype=int))
+            windowTitle=windowTitle+'/'
+            windowTitle=windowTitle+str(self.substrate.classified.shape[0])
+            windowTitle=windowTitle+')'
+
+        # Set window title
+        self.setWindowTitle(windowTitle)
+
+        # Return
+        return
+    
     def dictUpdated(self) -> None:
         """
         The file dictionary of the Qt substrate has been updated
@@ -151,6 +174,9 @@ class MainWindow(QMainWindow):
 
         # Trigger the exclusion of classified galaxies
         self.navigationToolbar.triggerClassifiedExclusion()
+
+        # Update the title of the windows
+        self.__updateWindowTitle()
 
         # Load the first galaxy of the file dictionary
         self.loadGalaxy(self.ngalaxies-1, noReadOut=True)
@@ -176,6 +202,7 @@ class MainWindow(QMainWindow):
             if(self.igalaxy is not None):
                 self.substrate.updateGalaxyProperties(self.igalaxy, *self.categoriesToolbar.readOut())
                 self.navigationToolbar.triggerGalaxyExclusion(self.igalaxy)
+                self.__updateWindowTitle()
         
         # Check whether no galaxy is to be loaded
 

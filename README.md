@@ -17,7 +17,7 @@ This tool has been heavily based on a classification script by `G. Mahler`, modi
 You can install this module using `pip`:
 
 ```console
-$ python3 -m pip install .
+python3 -m pip install .
 ```
 
 ## Usage
@@ -25,7 +25,7 @@ $ python3 -m pip install .
 In order to use `galclass` you can launch it from the command line, using the `-c` command line argument and specifying the path to the categories file to be used:
 
 ```console
-$ python3 -m galclass -c path/to/categories.json
+python3 -m galclass -c path/to/categories.json
 ```
 
 If you would just like to browse through the input files skipping the classification part, you can omit the `-c` command line argument as well as specifying the path to a categories file.
@@ -35,7 +35,7 @@ Once the main window shows up on your screen, you can just drap and drop an inpu
 If you prefer to specify the path to the input file list in the terminal, you can call `galclass` using the `-i` command line argument:
 
 ```console
-$ python3 -m galclass -c path/to/categories.json -i path/to/inputFileList.json
+python3 -m galclass -c path/to/categories.json -i path/to/inputFileList.json
 ```
 
 ## Navigation

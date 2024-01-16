@@ -96,7 +96,7 @@ class QtSubstrate(QObject):
     A class to be used as the substrate for the Qt application
     """
 
-    def __init__(self, categoriesFile: str, outputFileSuffix: Optional[str] = "_classified.json", defaultWindowSize: QSize = QSize(1920, 1080)):
+    def __init__(self, categoriesFile: Optional[str] = None, outputFileSuffix: Optional[str] = "_classified.json", defaultWindowSize: QSize = QSize(1920, 1080)):
         """
         Constructor
         """
@@ -127,7 +127,10 @@ class QtSubstrate(QObject):
         super().__init__()
 
         # Initialize the categories dictionary
-        self.categoriesDict=readJSONFile(categoriesFile)
+        if(categoriesFile is not None):
+            self.categoriesDict=readJSONFile(categoriesFile)
+        else:
+            self.categoriesDict={"categories": []}
 
         # Return
         return

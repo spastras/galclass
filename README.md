@@ -22,11 +22,13 @@ $ python3 -m pip install .
 
 ## Usage
 
-In order to use `galclass` you should launch it from the command line, specifying the path to the categories file to be used:
+In order to use `galclass` you can launch it from the command line, using the `-c` command line argument and specifying the path to the categories file to be used:
 
 ```console
 $ python3 -m galclass -c path/to/categories.json
 ```
+
+If you would just like to browse through the input files skipping the classification part, you can omit the `-c` command line argument as well as specifying the path to a categories file.
 
 Once the main window shows up on your screen, you can just drap and drop an input file list into it to get started.
 

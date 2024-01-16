@@ -28,9 +28,9 @@ def usage():
     Prints the command line usage information for galclass
     """
     Console.newLine()
-    Console.printInfo("Usage: galclass -c <categories_file> [-i <input_file>] [-o <output_file_suffix>]")
+    Console.printInfo("Usage: galclass [-c <categories_file>] [-i <input_file>] [-o <output_file_suffix>]")
     Console.newLine()
-    Console.printInfo("-c <categories_file>\t\t->\tcategories file")
+    Console.printInfo("[-c <categories_file>]\t\t->\t[optional] categories file (None)")
     Console.printInfo("[-i <input_file>]\t\t->\t[optional] input list file (None)")
     Console.printInfo("[-o <output_file_suffix>]\t->\t[optional] output classification file suffix ('_classificied.json')")
     return
@@ -84,11 +84,11 @@ def main(argv=sys.argv[1:]):
             outputFileSuffix=argv[iarg+1]
         iarg=iarg+1
     
-    # Check whether command line arguments are valid
-    if(categoriesFile is None):
-        Console.popJob(success=False)
-        Console.printError("Categories file not specified")
-        sys.exit(1)
+    # # Check whether command line arguments are valid
+    # if(categoriesFile is None):
+    #     Console.popJob(success=False)
+    #     Console.printError("Categories file not specified")
+    #     sys.exit(1)
     
     Console.popJob(success=True)
 

@@ -397,39 +397,42 @@ class categoriesToolbar(QToolBar):
         self.ncategories=len(self.categoryCheckboxes['name'])
 
         # Determine the maximum depth of the category tree
-        maxDepth=np.max(self.categoryCheckboxes['depth'])
+        maxDepth=int(np.max(self.categoryCheckboxes['depth'], initial=0))
 
         # Initialize the tab layout
         layout=QGridLayout()
 
-        # Initialize the categories group box
-        categoriesGroupbox=QGroupBox("Categories")
-        categoriesGroupbox.setCheckable(False)
+        # Check whether there are any categories available
+        if(maxDepth>0):
 
-        # Initialize the categories groupbox layout
-        categoriesGroupboxLayout=QGridLayout()
+            # Initialize the categories group box
+            categoriesGroupbox=QGroupBox("Categories")
+            categoriesGroupbox.setCheckable(False)
 
-        # Set column stretch
-        for idepth in range(maxDepth):
-            categoriesGroupboxLayout.setColumnStretch(2*idepth, 0)
-            categoriesGroupboxLayout.setColumnStretch(2*idepth+1, 1)
-        categoriesGroupboxLayout.setColumnStretch(2*maxDepth, 1)
-        
-        # Add the categories labels and checkboxies
-        for icategory in range(self.ncategories):
-            # Add the label with the name of the category
-            categoriesGroupboxLayout.addWidget(self.categoryCheckboxes['checkbox'][icategory], icategory, 2*(self.categoryCheckboxes['depth'][icategory]-1), Qt.AlignmentFlag.AlignLeft)
-            # Add the checkbox of the category
-            categoriesGroupboxLayout.addWidget(QLabel(self.categoryCheckboxes['name'][icategory]), icategory, 2*(self.categoryCheckboxes['depth'][icategory]-1)+1, Qt.AlignmentFlag.AlignLeft)
+            # Initialize the categories groupbox layout
+            categoriesGroupboxLayout=QGridLayout()
 
-        # Add the horizontal spacer
-        categoriesGroupboxLayout.addItem(QSpacerItem(0, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding), 0, 2*maxDepth, self.ncategories, 1)
+            # Set column stretch
+            for idepth in range(maxDepth):
+                categoriesGroupboxLayout.setColumnStretch(2*idepth, 0)
+                categoriesGroupboxLayout.setColumnStretch(2*idepth+1, 1)
+            categoriesGroupboxLayout.setColumnStretch(2*maxDepth, 1)
+            
+            # Add the categories labels and checkboxies
+            for icategory in range(self.ncategories):
+                # Add the label with the name of the category
+                categoriesGroupboxLayout.addWidget(self.categoryCheckboxes['checkbox'][icategory], icategory, 2*(self.categoryCheckboxes['depth'][icategory]-1), Qt.AlignmentFlag.AlignLeft)
+                # Add the checkbox of the category
+                categoriesGroupboxLayout.addWidget(QLabel(self.categoryCheckboxes['name'][icategory]), icategory, 2*(self.categoryCheckboxes['depth'][icategory]-1)+1, Qt.AlignmentFlag.AlignLeft)
 
-        # Set the categories groupbox layout
-        categoriesGroupbox.setLayout(categoriesGroupboxLayout)
+            # Add the horizontal spacer
+            categoriesGroupboxLayout.addItem(QSpacerItem(0, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding), 0, 2*maxDepth, self.ncategories, 1)
 
-        # Add the categories groupbox to tab layout
-        layout.addWidget(categoriesGroupbox, 0, 0, 1, 1)
+            # Set the categories groupbox layout
+            categoriesGroupbox.setLayout(categoriesGroupboxLayout)
+
+            # Add the categories groupbox to tab layout
+            layout.addWidget(categoriesGroupbox, 0, 0, 1, 1)
 
         # Initialize the comments group box
         commentsGroupbox=QGroupBox("Comments")

@@ -20,14 +20,14 @@ from .substrate import QtSubstrate
 # Start #
 #*******#
 
-def start(categoriesFile: str, inputFile: Optional[str] = None, outputFileSuffix: Optional[str] = "_classified.json") -> None:
+def start(categoriesFile: Optional[str] = None, inputFile: Optional[str] = None, outputFileSuffix: Optional[str] = "_classified.json") -> None:
     """
     Initializes the Qt application
 
     Parameters
     ----------
-    categoriesFile : str
-        The path to the categories file
+    categoriesFile : str, optional
+        The path to the categories file (default is None)
     inputFile : str, optional
         The path to the input list file (default is None)
     outputFileSuffix : str, optional

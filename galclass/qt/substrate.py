@@ -38,7 +38,7 @@ class inputFileLoaderSignals(QObject):
     """
 
     # Class attributes
-    finished=pyqtSignal(dict, dict, str)
+    finished=pyqtSignal(dict, dict, str, str)
 
 class inputFileLoader(QRunnable):
     """
@@ -77,9 +77,12 @@ class inputFileLoader(QRunnable):
             propertyDict=readJSONFile(self.outputFile)
         except:
             propertyDict={}
+        
+        # Determine the path to the input root directory
+        inputRootDir=os.path.abspath(os.path.dirname(os.path.expanduser(self.inputFile)))
 
         # Emit finished signal
-        self.signals.finished.emit(fileDict, propertyDict, self.outputFile)
+        self.signals.finished.emit(fileDict, propertyDict, inputRootDir, self.outputFile)
 
         # Return
         return
@@ -117,6 +120,7 @@ class QtSubstrate(QObject):
         self.fileDict=None
         self.classified=None
         self.propertyDict=[]
+        self.inputRootDir=None
         self.outputFile=None
 
         # Call super().__init__
@@ -241,7 +245,7 @@ class QtSubstrate(QObject):
         # Return
         return
     
-    def loadingDone(self, fileDict: dict, propertyDict: dict, outputFile: str) -> None:
+    def loadingDone(self, fileDict: dict, propertyDict: dict, inputRootDir: str, outputFile: str) -> None:
         """
         Loading of a new file dictionary has been completed
 
@@ -251,11 +255,14 @@ class QtSubstrate(QObject):
             A dictionary with the information about the files of the galaxies to be classified
         propertyDict : dict
             A dictionary with previously determined properties of the galaxies to be classified
+        inputRootDir : str
+            The path to the root directory of the input file
         outputFile : str
             The path to the file to use for the writing of the properties of the galaxies
         """
 
         # Evaluate arguments
+        self.inputRootDir=inputRootDir
         self.outputFile=outputFile
 
         # Set metadata

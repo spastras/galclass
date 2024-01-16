@@ -285,7 +285,7 @@ class MainWindow(QMainWindow):
             self.infoToolbar.updateFilterInfoModel(filterInfo)
 
             # Determine the path to the filter pdf file
-            filePath=os.path.abspath(self.substrate.fileDict['galaxies'][self.igalaxy]['files'][self.ifilter])
+            filePath=os.path.abspath(os.path.join(self.substrate.inputRootDir, self.substrate.fileDict['galaxies'][self.igalaxy]['files'][self.ifilter]))
 
             # Load the filter pdf in the pdf view
             self.pdfDocument.load(filePath)

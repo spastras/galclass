@@ -28,11 +28,12 @@ def usage():
     Prints the command line usage information for galclass
     """
     Console.newLine()
-    Console.printInfo("Usage: galclass [-c <categories_file>] [-i <input_file>] [-o <output_file_suffix>]")
+    Console.printInfo("Usage: galclass [-c <categories_file>] [-i <input_file>] [-o <output_file_suffix>] [--graphical-only]")
     Console.newLine()
-    Console.printInfo("[-c <categories_file>]\t\t->\t[optional] categories file (None)")
+    Console.printInfo("[-c <categories_file>]\t->\t[optional] categories file (None)")
     Console.printInfo("[-i <input_file>]\t\t->\t[optional] input list file (None)")
     Console.printInfo("[-o <output_file_suffix>]\t->\t[optional] output classification file suffix ('_classificied.json')")
+    Console.printInfo("[--graphical-only]\t\t->\t[optional] use the Graphical User Interface to get the path to the categories file")
     return
 
 #******#
@@ -58,6 +59,7 @@ def main(argv=sys.argv[1:]):
     categoriesFile=None
     inputFile=None
     outputFileSuffix="_classified.json"
+    graphicalOnly=False
 
     # Evaluate Command Line Arguments
 
@@ -78,17 +80,24 @@ def main(argv=sys.argv[1:]):
     while(iarg<argc):
         if((argv[iarg]=="-c")and(iarg+1<argc)):
             categoriesFile=argv[iarg+1]
-        if((argv[iarg]=="-i")and(iarg+1<argc)):
+            iarg=iarg+1
+        elif((argv[iarg]=="-i")and(iarg+1<argc)):
             inputFile=argv[iarg+1]
-        if((argv[iarg]=="-o")and(iarg+1<argc)):
+            iarg=iarg+1
+        elif((argv[iarg]=="-o")and(iarg+1<argc)):
             outputFileSuffix=argv[iarg+1]
+            iarg=iarg+1
+        elif((argv[iarg]=="--graphical-only")):
+            graphicalOnly=True
+        else:
+            Console.popJob(success=False)
+            Console.printError(f"Unknown argument: \"{argv[iarg]}\"")
+            sys.exit(1)
         iarg=iarg+1
     
-    # # Check whether command line arguments are valid
-    # if(categoriesFile is None):
-    #     Console.popJob(success=False)
-    #     Console.printError("Categories file not specified")
-    #     sys.exit(1)
+    # Check whether the categories file is to be specified in a graphical way
+    if(graphicalOnly):
+        categoriesFile=""
     
     Console.popJob(success=True)
 

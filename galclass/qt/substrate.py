@@ -96,7 +96,7 @@ class QtSubstrate(QObject):
     A class to be used as the substrate for the Qt application
     """
 
-    def __init__(self, categoriesFile: Optional[str] = None, outputFileSuffix: Optional[str] = "_classified.json", defaultWindowSize: QSize = QSize(1920, 1080)):
+    def __init__(self, outputFileSuffix: Optional[str] = "_classified.json", defaultWindowSize: QSize = QSize(1920, 1080)):
         """
         Constructor
         """
@@ -125,6 +125,19 @@ class QtSubstrate(QObject):
 
         # Call super().__init__
         super().__init__()
+
+        # Return
+        return
+    
+    def useCategoriesFile(self, categoriesFile: Optional[str] = None) -> None:
+        """
+        Use the specified categories file
+
+        Parameters
+        ----------
+        categoriesFile : str, optional
+            The path to the categories file to use (default is None)
+        """
 
         # Initialize the categories dictionary
         if(categoriesFile is not None):
@@ -190,7 +203,7 @@ class QtSubstrate(QObject):
 
         # Open the file dialog
         fileDialog=QFileDialog()
-        inputFile=fileDialog.getOpenFileName(self.window, "Open JSON File", "", "JSON Files (*.json)")[0]
+        inputFile=fileDialog.getOpenFileName(self.window, "Open input file list JSON File", "", "JSON Files (*.json)")[0]
 
         # Open the specified file
         if(inputFile!=""):
@@ -201,7 +214,7 @@ class QtSubstrate(QObject):
     
     def openInputFile(self, inputFile: str) -> None:
         """
-        Opens an input files
+        Opens an input file
 
         Parameters
         ----------

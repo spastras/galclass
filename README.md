@@ -38,6 +38,13 @@ If you prefer to specify the path to the input file list in the terminal, you ca
 $ python3 -m galclass -c path/to/categories.json -i path/to/inputFileList.json
 ```
 
+## Navigation
+
+If you would like to use the keyboard in order to browse through the input files, you can do so using:
+
+* `Right Arrow` / `Left Arrow` to view the `Next` / `Previous` filter of a galaxy
+* `Shift`+`Right Arrow` / `Shift`+`Left Arrow` to view the `Next` / `Previous` galaxy
+
 ## Development
 
 If you have any suggestions or bug reports please don't hesitate to contact me!

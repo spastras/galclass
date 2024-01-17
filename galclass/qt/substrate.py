@@ -458,7 +458,8 @@ class QtSubstrate(QObject):
         """
 
         # Update the properties of the specified galaxy
-        self.propertyDict['galaxies'][igalaxy]['categories']=categories
+        if(self.categoriesDict['categories']):
+            self.propertyDict['galaxies'][igalaxy]['categories']=categories
         self.propertyDict['galaxies'][igalaxy]['comments']=comments
 
         # Write the property dictionary to file

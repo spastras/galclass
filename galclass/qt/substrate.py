@@ -113,7 +113,6 @@ class QtSubstrate(QObject):
         self.window=None
 
         # Status
-        self.excludeClassified=True
         self.inputFileLoading=False
         
         # Data
@@ -142,8 +141,10 @@ class QtSubstrate(QObject):
         # Initialize the categories dictionary
         if(categoriesFile is not None):
             self.categoriesDict=readJSONFile(categoriesFile)
+            self.excludeClassified=True
         else:
             self.categoriesDict={"categories": []}
+            self.excludeClassified=False
 
         # Return
         return
@@ -301,7 +302,8 @@ class QtSubstrate(QObject):
 
         # Enable actions
         self.actionSubstrate.setFileActionsEnabled(True)
-        self.actionSubstrate.setExclusionNavigationActionEnabled(True)
+        if(self.categoriesDict['categories']):
+            self.actionSubstrate.setExclusionNavigationActionEnabled(True)
 
         # Return
         return
@@ -551,7 +553,7 @@ class QtActionSubstrate(QObject):
 
         action=QAction("Exclude Classified", self)
         action.setCheckable(True)
-        action.setChecked(True)
+        action.setChecked(self.substrate.excludeClassified)
         action.toggled.connect(self.substrate.toggleExcludeClassified)
         self.navigationActions.append(action)
 

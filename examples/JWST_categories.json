@@ -53,7 +53,7 @@
         {
             "name": "Interacting/Merger",
             "isAlso": [],
-            "isNot": ["Disk", "Spheroidal", "Undefined", "Lens System"],
+            "isNot": ["Undefined", "Lens System"],
             "shortcut": "8",
             "categories": []
         },

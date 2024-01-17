@@ -10,7 +10,7 @@
         {
             "name": "Disk",
             "isAlso": [],
-            "isNot": ["Spheroidal", "Interacting/Merger", "Undefined", "Lens System"],
+            "isNot": ["Spheroidal", "Undefined", "Lens System"],
             "shortcut": "2",
             "categories": [
                 {

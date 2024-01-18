@@ -186,6 +186,32 @@ class infoToolbar(QToolBar):
 
         # Initialize the tab layout
         layout=QGridLayout()
+        
+        # Initialize the colour image display group box
+        imageGroupBox = QGroupBox("Colour image")
+        imageGroupBox.setCheckable(False)
+
+        # Initialize the image group box layout
+        imageGroupBoxLayout = QGridLayout()
+
+        # Set column and row stretch for image group box
+        imageGroupBoxLayout.setColumnStretch(0, 1)
+        imageGroupBoxLayout.setRowStretch(0, 1)
+
+        # Initialize QLabel for image display
+        self.imageLabel = QLabel(self)
+        # Load your image and set it to the label
+        pixmap = QPixmap(self.parentWindow.pathImage)
+        self.imageLabel.setPixmap(pixmap)
+
+        # Add the image label to the image group box layout
+        imageGroupBoxLayout.addWidget(self.imageLabel, 0, 0, 1, 1)
+
+        # Set the image group box layout
+        imageGroupBox.setLayout(imageGroupBoxLayout)
+
+        # Add the image group box to tab layout
+        layout.addWidget(imageGroupBox, 0, 0, 1, 1)
 
         # Initialize the galaxy info group box
         galaxyInfoGroupbox=QGroupBox("Galaxy")
@@ -216,7 +242,7 @@ class infoToolbar(QToolBar):
         galaxyInfoGroupbox.setLayout(galaxyInfoGroupboxLayout)
 
         # Add the galaxy info groupbox to tab layout
-        layout.addWidget(galaxyInfoGroupbox, 0, 0, 1, 1)
+        layout.addWidget(galaxyInfoGroupbox, 1, 0, 1, 1)
 
         # Initialize the filter info group box
         filterInfoGroupbox=QGroupBox("Filter")
@@ -247,11 +273,23 @@ class infoToolbar(QToolBar):
         filterInfoGroupbox.setLayout(filterInfoGroupboxLayout)
 
         # Add the filter info groupbox to tab layout
-        layout.addWidget(filterInfoGroupbox, 1, 0, 1, 1)
+        layout.addWidget(filterInfoGroupbox, 2, 0, 1, 1)
 
         # Initialize info tab widget
         self.infoTab=QWidget()
         self.infoTab.setLayout(layout)
+
+        # Return
+        return
+    
+    def updateImage(self, pathImage: str):
+        """
+        Updates the color image using the specified path
+        """
+
+        # Load your image and set it to the label
+        pixmap = QPixmap(pathImage)
+        self.imageLabel.setPixmap(pixmap)
 
         # Return
         return

@@ -359,14 +359,15 @@ class categoriesToolbar(QToolBar):
             subname=subcategory['name']
             subisAlso=isAlso+subcategory['isAlso']
             subisNot=isNot+subcategory['isNot']
+            subshortcut=subcategory['shortcut']
 
             # Initialize the checkbox of the subcategory
             checkbox=QCheckBox(self)
             checkbox.setCheckable(True)
             checkbox.setChecked(False)
             checkbox.setEnabled(self.categoryWidgetsEnabled)
-            if(subcategory['shortcut']!=""):
-                checkbox.setShortcut(QKeySequence(subcategory['shortcut']))
+            if(subshortcut!=""):
+                checkbox.setShortcut(QKeySequence(subshortcut))
             checkbox.stateChanged.connect(partial(self.checkboxToggled, subname, subisAlso, subisNot))
             
             # Append the checkbox and its metadata to the category checkboxes list
@@ -375,6 +376,7 @@ class categoriesToolbar(QToolBar):
             self.categoryCheckboxes['isAlso'].append(subisAlso)
             self.categoryCheckboxes['isNot'].append(subisNot)
             self.categoryCheckboxes['depth'].append(depth)
+            self.categoryCheckboxes['shortcut'].append(subshortcut)
 
             # Initialize the checkboxes of the subcategories of the subcategory
             self.__buildCategoryTree(subcategory, depth=depth+1, isAlso=subisAlso+[subname,], isNot=subisNot)
@@ -388,7 +390,7 @@ class categoriesToolbar(QToolBar):
         """
 
         # Initialize the category checkboxes dict
-        self.categoryCheckboxes={'checkbox': [], 'name': [], 'isAlso': [], 'isNot': [], 'depth': []}
+        self.categoryCheckboxes={'checkbox': [], 'name': [], 'isAlso': [], 'isNot': [], 'depth': [], 'shortcut': []}
 
         # Build the category tree
         self.__buildCategoryTree(self.substrate.categoriesDict)
@@ -418,12 +420,18 @@ class categoriesToolbar(QToolBar):
                 categoriesGroupboxLayout.setColumnStretch(2*idepth+1, 1)
             categoriesGroupboxLayout.setColumnStretch(2*maxDepth, 1)
             
-            # Add the categories labels and checkboxies
+            # Add the categories checkboxies and labels
             for icategory in range(self.ncategories):
-                # Add the label with the name of the category
-                categoriesGroupboxLayout.addWidget(self.categoryCheckboxes['checkbox'][icategory], icategory, 2*(self.categoryCheckboxes['depth'][icategory]-1), Qt.AlignmentFlag.AlignLeft)
                 # Add the checkbox of the category
-                categoriesGroupboxLayout.addWidget(QLabel(self.categoryCheckboxes['name'][icategory]), icategory, 2*(self.categoryCheckboxes['depth'][icategory]-1)+1, Qt.AlignmentFlag.AlignLeft)
+                categoriesGroupboxLayout.addWidget(self.categoryCheckboxes['checkbox'][icategory], icategory, 2*(self.categoryCheckboxes['depth'][icategory]-1), Qt.AlignmentFlag.AlignLeft)
+                # Add the label with the name of the category
+                categoryLabel=self.categoryCheckboxes['name'][icategory]
+                if(self.categoryCheckboxes['shortcut'][icategory]!=""):
+                    categoryLabel=categoryLabel+' '
+                    categoryLabel=categoryLabel+'['
+                    categoryLabel=categoryLabel+self.categoryCheckboxes['shortcut'][icategory]
+                    categoryLabel=categoryLabel+']'
+                categoriesGroupboxLayout.addWidget(QLabel(categoryLabel), icategory, 2*(self.categoryCheckboxes['depth'][icategory]-1)+1, Qt.AlignmentFlag.AlignLeft)
 
             # Add the horizontal spacer
             categoriesGroupboxLayout.addItem(QSpacerItem(0, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding), 0, 2*maxDepth, self.ncategories, 1)

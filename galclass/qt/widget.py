@@ -50,6 +50,50 @@ class pdfView(QPdfView):
         # Return
         return super().resizeEvent(event)
 
+#************#
+# Image view #
+#************#
+
+class imageView(QLabel):
+    """
+    A widget for the viewing of PNG images
+    """
+
+    def __init__(self, parent: Optional[QWidget] = None):
+        # Call super().__init__
+        super().__init__(parent)
+        # Set the size policy
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        # Load the default image
+        self.loadImage("")
+        # Return
+        return
+    
+    def __updatePixmap(self):
+        # Scale the full pixmap
+        pixmapScaled=self.pixmapFull.scaled(self.size(), Qt.AspectRatioMode.KeepAspectRatioByExpanding)
+        # Set the scaled pixmap
+        self.setPixmap(pixmapScaled)
+        # Return
+        return
+    
+    def resizeEvent(self, event: Optional[QResizeEvent] = None) -> None:
+        # Update the pixmap
+        self.__updatePixmap()
+        # Return
+        return super().resizeEvent(event)
+    
+    def loadImage(self, path: str) -> None:
+        # Update the full pixmap
+        if((path=="")or(not os.path.isfile(path))):
+            self.pixmapFull=QPixmap(os.path.dirname(os.path.abspath(__file__))+'/../resources/mpg.png')
+        else:
+            self.pixmapFull=QPixmap(path)
+        # Update the pixmap
+        self.__updatePixmap()
+        # Return
+        return
+
 #**********#
 # Menu bar #
 #**********#
@@ -187,31 +231,28 @@ class infoToolbar(QToolBar):
         # Initialize the tab layout
         layout=QGridLayout()
         
-        # Initialize the colour image display group box
-        imageGroupBox = QGroupBox("Colour image")
-        imageGroupBox.setCheckable(False)
+        # Initialize the preview image groupbox
+        previewImageGroupBox=QGroupBox("Preview")
+        previewImageGroupBox.setCheckable(False)
 
-        # Initialize the image group box layout
-        imageGroupBoxLayout = QGridLayout()
+        # Initialize the preview image groupbox layout
+        previewImageGroupBoxLayout=QGridLayout()
 
-        # Set column and row stretch for image group box
-        imageGroupBoxLayout.setColumnStretch(0, 1)
-        imageGroupBoxLayout.setRowStretch(0, 1)
+        # Set column and row stretch
+        previewImageGroupBoxLayout.setColumnStretch(0, 1)
+        previewImageGroupBoxLayout.setRowStretch(0, 1)
 
-        # Initialize QLabel for image display
-        self.imageLabel = QLabel(self)
-        # Load your image and set it to the label
-        pixmap = QPixmap(self.parentWindow.pathImage)
-        self.imageLabel.setPixmap(pixmap)
+        # Initialize the preview image view
+        self.previewImageView=imageView(self)
 
-        # Add the image label to the image group box layout
-        imageGroupBoxLayout.addWidget(self.imageLabel, 0, 0, 1, 1)
+        # Add the preview image view
+        previewImageGroupBoxLayout.addWidget(self.previewImageView, 0, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
-        # Set the image group box layout
-        imageGroupBox.setLayout(imageGroupBoxLayout)
+        # Set the preview image groupbox layout
+        previewImageGroupBox.setLayout(previewImageGroupBoxLayout)
 
-        # Add the image group box to tab layout
-        layout.addWidget(imageGroupBox, 0, 0, 1, 1)
+        # Add the preview image groupbox to tab layout
+        layout.addWidget(previewImageGroupBox, 0, 0, 1, 1)
 
         # Initialize the galaxy info group box
         galaxyInfoGroupbox=QGroupBox("Galaxy")
@@ -282,14 +323,13 @@ class infoToolbar(QToolBar):
         # Return
         return
     
-    def updateImage(self, pathImage: str):
+    def updatePreviewImage(self, path: str):
         """
-        Updates the color image using the specified path
+        Updates the preview image using the specified path
         """
 
-        # Load your image and set it to the label
-        pixmap = QPixmap(pathImage)
-        self.imageLabel.setPixmap(pixmap)
+        # Load the specified image in the preview image view
+        self.previewImageView.loadImage(path)
 
         # Return
         return

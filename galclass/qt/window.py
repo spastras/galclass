@@ -46,7 +46,6 @@ class MainWindow(QMainWindow):
         self.igalaxy=None
         self.nfilters=0
         self.ifilter=None
-        self.pathImage=None
 
         # Call super().__init__
         super().__init__()
@@ -228,6 +227,9 @@ class MainWindow(QMainWindow):
             self.navigationToolbar.galaxyCombobox.setCurrentIndex(-1)
             self.navigationToolbar.galaxyCombobox.blockSignals(False)
 
+            # Clear the preview image
+            self.infoToolbar.updatePreviewImage("")
+
             # Clear the galaxy info model
             self.infoToolbar.updateGalaxyInfoModel({})
             
@@ -258,17 +260,13 @@ class MainWindow(QMainWindow):
             self.navigationToolbar.galaxyCombobox.setCurrentIndex(self.igalaxy)
             self.navigationToolbar.galaxyCombobox.blockSignals(False)
 
+            # Update the preview image
+            self.infoToolbar.updatePreviewImage(os.path.abspath(os.path.join(self.substrate.inputRootDir, self.substrate.fileDict['galaxies'][self.igalaxy]['preview'])))
+
             # Update the galaxy info model
             galaxyInfo={"Name": self.substrate.fileDict['galaxies'][self.igalaxy]['name'], "Filters": self.substrate.fileDict['galaxies'][self.igalaxy]['filters']}
             galaxyInfo.update(self.substrate.fileDict['galaxies'][self.igalaxy]['info'])
             self.infoToolbar.updateGalaxyInfoModel(galaxyInfo)
-            
-            # Update the path to the color image:
-            self.pathImage=os.path.abspath(os.path.join(self.substrate.inputRootDir, self.substrate.fileDict['galaxies'][self.igalaxy]['preview']))
-            if not os.path.isfile(self.pathImage):
-                self.infoToolbar.updateImage(os.path.dirname(os.path.abspath(__file__))+'/../resources/mpg-logo.png')
-            else:
-                self.infoToolbar.updateImage(self.pathImage)
 
             # Update the filter combobox
             self.navigationToolbar.updateFilterCombobox(self.substrate.fileDict['galaxies'][self.igalaxy]['filters'])

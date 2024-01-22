@@ -259,8 +259,15 @@ class combinedClassification(classification):
             The number of times the item must have fallen within a category in order for that category to be returned
         """
 
+        # Determine the categories to be returned
+        shouldReturnCategory=(self.ntimesInCategory[self._classification__getItemID(item),:]>=threshold)
+        categoriesToReturn=[]
+        for icategory in range(self.ncategories):
+            if(shouldReturnCategory[icategory]):
+                categoriesToReturn.append(self.categories[icategory])
+
         # Return
-        return self.categories[self.ntimesInCategory[self._classification__getItemID(item),:]>=threshold]
+        return categoriesToReturn
     
     def getCommentsOn(self, item: str) -> list:
         """
@@ -317,8 +324,15 @@ class combinedClassification(classification):
             The number of times an item must have fallen within the category in order to be taken into account
         """
 
+        # Determine the items to be returned
+        shouldReturnItem=(self.ntimesInCategory[:,self._classification__getCategoryID(category)]>=threshold)
+        itemsToReturn=[]
+        for iitem in range(self.nitems):
+            if(shouldReturnItem[iitem]):
+                itemsToReturn.append(self.items[iitem])
+
         # Return
-        return self.items[self.ntimesInCategory[:,self._classification__getCategoryID(category)]>=threshold]
+        return itemsToReturn
 
 #############
 # Functions #

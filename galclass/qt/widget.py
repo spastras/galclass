@@ -701,11 +701,12 @@ class navigationToolbar(QToolBar):
         # Initialize the galaxy layout
         galaxyGroupboxLayout=QGridLayout()
 
-        # Set row stretch
-        galaxyGroupboxLayout.setRowStretch(0, 1)
-        galaxyGroupboxLayout.setRowStretch(1, 1)
-        galaxyGroupboxLayout.setRowStretch(2, 1)
-        galaxyGroupboxLayout.setRowStretch(3, 1)
+        # Set column and row stretch
+        galaxyGroupboxLayout.setColumnStretch(0, 1)
+        galaxyGroupboxLayout.setColumnStretch(1, 1)
+        galaxyGroupboxLayout.setColumnStretch(2, 1)
+        galaxyGroupboxLayout.setColumnStretch(3, 1)
+        galaxyGroupboxLayout.setRowStretch(0, 0)
 
         # Initialize the galaxy groupbox widgets
 
@@ -724,6 +725,7 @@ class navigationToolbar(QToolBar):
         self.galaxyModel=QStandardItemModel(self)
         self.galaxyCompleter=QCompleter()
         self.galaxyCompleter.setModel(self.galaxyModel)
+        self.galaxyCompleter.setFilterMode(Qt.MatchFlag.MatchContains)
         self.galaxyCompleter.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
         self.galaxyCompleter.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
         self.galaxyCompleter.activated.connect(self.performGalaxySearch)
@@ -757,10 +759,11 @@ class navigationToolbar(QToolBar):
         # Initialize the filter layout
         filterGroupboxLayout=QGridLayout()
 
-        # Set row stretch
-        filterGroupboxLayout.setRowStretch(0, 1)
-        filterGroupboxLayout.setRowStretch(1, 1)
-        filterGroupboxLayout.setRowStretch(2, 1)
+        # Set column and row stretch
+        filterGroupboxLayout.setColumnStretch(0, 1)
+        filterGroupboxLayout.setColumnStretch(1, 1)
+        filterGroupboxLayout.setColumnStretch(2, 1)
+        filterGroupboxLayout.setRowStretch(0, 0)
 
         # Initialize the filter groubox widgets
 

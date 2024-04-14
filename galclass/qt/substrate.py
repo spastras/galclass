@@ -239,6 +239,9 @@ class QtSubstrate(QObject):
         self.inputRootDir=None
         self.outputFile=None
 
+        # Configuration
+        self.searchAliases=True
+
         # Call super().__init__
         super().__init__()
 
@@ -310,6 +313,7 @@ class QtSubstrate(QObject):
         # Disable the navigation actions
         self.actionSubstrate.setExclusionNavigationActionEnabled(False)
         self.actionSubstrate.setLoadNavigationActionsEnabled(False)
+        self.actionSubstrate.setSearchActionsEnabled(False)
 
         # Return
         return
@@ -359,6 +363,7 @@ class QtSubstrate(QObject):
         # Disable actions
         self.actionSubstrate.setFileActionsEnabled(False)
         self.actionSubstrate.setExclusionNavigationActionEnabled(False)
+        self.actionSubstrate.setSearchActionsEnabled(False)
 
         # Determine the output filename
         outputFile=inputFile
@@ -427,6 +432,7 @@ class QtSubstrate(QObject):
         self.actionSubstrate.setFileActionsEnabled(shouldActionsBeEnabled)
         if(self.categoriesDict['categories']):
             self.actionSubstrate.setExclusionNavigationActionEnabled(shouldActionsBeEnabled)
+        self.actionSubstrate.setSearchActionsEnabled(shouldActionsBeEnabled)
 
         # Return
         return
@@ -541,6 +547,20 @@ class QtSubstrate(QObject):
                 ifilter=self.window.nfilters-1
             # Load the filter
             self.window.loadFilter(ifilter)
+
+        # Return
+        return
+    
+    def toggleSearchAliases(self, enabled: bool) -> None:
+        """
+        Toggle the searching of the aliases of the galaxies
+        """
+
+        # Toggle the search aliases flag
+        self.searchAliases=enabled
+
+        # Update the galaxy search column of the navigation toolbar
+        self.window.navigationToolbar.updateGalaxySearchColumn(int(self.searchAliases))
 
         # Return
         return
@@ -714,6 +734,14 @@ class QtActionSubstrate(QObject):
         action.triggered.connect(partial(self.substrate.switchFilter, action.data()))
         self.navigationActions.append(action)
 
+        # Initialize the galaxy search actions
+
+        action=QAction("Search Aliases", self)
+        action.setCheckable(True)
+        action.setChecked(self.substrate.searchAliases)
+        action.toggled.connect(self.substrate.toggleSearchAliases)
+        self.navigationActions.append(action)
+
         # Return
         return
     
@@ -746,7 +774,19 @@ class QtActionSubstrate(QObject):
         """
 
         # Enable/Disable the load navigation actions
-        for action in self.navigationActions[1:]:
+        for action in self.navigationActions[1:5]:
+            action.setEnabled(enabled)
+        
+        # Return
+        return
+
+    def setSearchActionsEnabled(self, enabled: bool):
+        """
+        Enable/Disable the search actions
+        """
+
+        # Enable/Disable the search actions
+        for action in self.navigationActions[5:6]:
             action.setEnabled(enabled)
 
         # Return

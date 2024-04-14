@@ -167,15 +167,17 @@ class MainWindow(QMainWindow):
         if(self.substrate.fileDict):
             self.ngalaxies=len(self.substrate.fileDict['galaxies'])
             galaxyNames=[self.substrate.fileDict['galaxies'][igalaxy]['name'] for igalaxy in range(self.ngalaxies)]
+            galaxyAliases=[self.substrate.fileDict['galaxies'][igalaxy]['aliases'] for igalaxy in range(self.ngalaxies)]
         else:
             self.ngalaxies=0
             galaxyNames=[]
+            galaxyAliases=[]
 
         # Update the galaxy combobox
         self.navigationToolbar.updateGalaxyCombobox(galaxyNames)
 
         # Update the galaxy model
-        self.navigationToolbar.updateGalaxyModel(galaxyNames)
+        self.navigationToolbar.updateGalaxyModel(galaxyNames, galaxyAliases)
 
         # Trigger the exclusion of classified galaxies
         self.navigationToolbar.triggerClassifiedExclusion()
@@ -272,7 +274,7 @@ class MainWindow(QMainWindow):
             self.infoToolbar.updatePreviewImage(os.path.abspath(os.path.join(self.substrate.inputRootDir, self.substrate.fileDict['galaxies'][self.igalaxy]['preview'])))
 
             # Update the galaxy info model
-            galaxyInfo={"Name": self.substrate.fileDict['galaxies'][self.igalaxy]['name'], "Filters": self.substrate.fileDict['galaxies'][self.igalaxy]['filters']}
+            galaxyInfo={"Name": self.substrate.fileDict['galaxies'][self.igalaxy]['name'], "Aliases": self.substrate.fileDict['galaxies'][self.igalaxy]['aliases'], "Filters": self.substrate.fileDict['galaxies'][self.igalaxy]['filters']}
             galaxyInfo.update(self.substrate.fileDict['galaxies'][self.igalaxy]['info'])
             self.infoToolbar.updateGalaxyInfoModel(galaxyInfo)
 

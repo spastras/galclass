@@ -45,6 +45,12 @@ class inputFileLoader(QRunnable):
     Loads an input list file
     """
 
+    # Class attributes
+    galaxyFields={'required': ['name', 'filters'], 'optional': ['aliases', 'preview', 'info']}
+    filterFields={'required': ['files'], 'optional': ['fileInfo']}
+    galaxyFieldPlaceholder=[[], "", {}]
+    filterFieldPlaceholder=[{},]
+
     def __init__(self, inputFile: str, outputFile: str):
         """
         Constructor
@@ -62,6 +68,108 @@ class inputFileLoader(QRunnable):
 
         # Return
         return
+    
+    def isFileDictValid(self, fileDict: dict) -> bool:
+        """
+        Checks whether the specified file dict is valid
+
+        Parameters
+        ----------
+        fileDict : dict
+            the file dictionary the validity of which is to be determined
+        
+        Returns
+        -------
+        isFileDictValid : bool
+            Is the specified file dict valid?
+        """
+
+        # Check whether the file dictionary includes a 'galaxies' key
+        if('galaxies' not in fileDict.keys()):
+            return False
+        
+        # Check whether the file dictionary includes any galaxies
+        ngalaxies=len(fileDict['galaxies'])
+        if(ngalaxies<=0):
+            return False
+        
+        # Evaluate the validity of each galaxy entry
+        isFileDictValid=True
+        for igalaxy in range(ngalaxies):
+            # Get the entry of the galaxy
+            galaxy=fileDict['galaxies'][igalaxy]
+            # Check whether all required galaxy fields are present
+            for galaxyField in self.galaxyFields['required']:
+                if(galaxyField not in galaxy.keys()):
+                    isFileDictValid=False
+                    break
+            # Check whether the file dictionary is still valid
+            if(not isFileDictValid):
+                break
+            # Get the number of filters of the galaxy
+            nfilters=len(galaxy['filters'])
+            # Check whether all required filter fields are present
+            for filterField in self.filterFields['required']:
+                if(filterField not in galaxy.keys()):
+                    isFileDictValid=False
+                    break
+                else:
+                    if(len(galaxy[filterField])!=nfilters):
+                        isFileDictValid=False
+                        break
+            # Check whether the file dictionary is still valid
+            if(not isFileDictValid):
+                break
+        
+        # Return
+        return isFileDictValid
+    
+    def augmentFileDict(self, fileDict: dict) -> dict:
+        """
+        Fills in the missing optional fields of the specified file dict
+
+        Parameters
+        ----------
+        fileDict : dict
+            the file dictionary the missing optional fields of which are to be filled
+        
+        Returns
+        -------
+        augmentedFileDict : dict
+            the file dictionary with no missing optional fields
+        """
+        
+        # Get metadata
+        ngalaxies=len(fileDict['galaxies'])
+        noptionalGalaxyFields=len(self.galaxyFields['optional'])
+        noptionalFilterFields=len(self.filterFields['optional'])
+
+        # Copy the original file dict
+        augmentedFileDict=dict(fileDict)
+        
+        # Fills in the missing optional fields of the file dict
+        for igalaxy in range(ngalaxies):
+            # Get the entry of the galaxy
+            galaxy=augmentedFileDict['galaxies'][igalaxy]
+            # Check whether all optional galaxy fields are present
+            for ioptionalGalaxyField in range(noptionalGalaxyFields):
+                # Determine the optional galaxy field
+                optionalGalaxyField=self.galaxyFields['optional'][ioptionalGalaxyField]
+                # Fill in the optional galaxy field if it is missing
+                if(optionalGalaxyField not in galaxy.keys()):
+                    galaxy[optionalGalaxyField]=self.galaxyFieldPlaceholder[ioptionalGalaxyField]
+            # Get the number of filters of the galaxy
+            nfilters=len(galaxy['filters'])
+            # Check whether all optional filter fields are present
+            for ioptionalFilterField in range(noptionalFilterFields):
+                # Determine the optional filter field
+                optionalFilterField=self.filterFields['optional'][ioptionalFilterField]
+                # Fill in the optional filter field if it is missing
+                if(optionalFilterField not in galaxy.keys()):
+                    galaxy[optionalFilterField]=[self.filterFieldPlaceholder[ioptionalFilterField],]*nfilters
+        
+        # Return
+        return augmentedFileDict
 
     @pyqtSlot()
     def run(self):
@@ -72,14 +180,23 @@ class inputFileLoader(QRunnable):
         # Read JSON file
         fileDict=readJSONFile(self.inputFile)
 
-        # Attempt to read previous output JSON file
-        try:
-            propertyDict=readJSONFile(self.outputFile)
-        except:
+        # Evaluate the file dict
+
+        if(self.isFileDictValid(fileDict)):
+            # Fill in the missing optional fields of the file dict
+            fileDict=self.augmentFileDict(fileDict)
+            # Attempt to read previous output JSON file
+            try:
+                propertyDict=readJSONFile(self.outputFile)
+            except:
+                propertyDict={}
+            # Determine the path to the input root directory
+            inputRootDir=os.path.abspath(os.path.dirname(os.path.expanduser(self.inputFile)))
+        else:
+            # Generate dummy objects to be returned
+            fileDict={}
             propertyDict={}
-        
-        # Determine the path to the input root directory
-        inputRootDir=os.path.abspath(os.path.dirname(os.path.expanduser(self.inputFile)))
+            inputRootDir=None
 
         # Emit finished signal
         self.signals.finished.emit(fileDict, propertyDict, inputRootDir, self.outputFile)
@@ -118,7 +235,7 @@ class QtSubstrate(QObject):
         # Data
         self.fileDict=None
         self.classified=None
-        self.propertyDict=[]
+        self.propertyDict={}
         self.inputRootDir=None
         self.outputFile=None
 
@@ -291,19 +408,25 @@ class QtSubstrate(QObject):
         # Update the property dict
         if(propertyDict):
             self.propertyDict=propertyDict
-        else:
+        elif(fileDict):
             self.__initGalaxyProperties()
+        else:
+            self.propertyDict={}
         
         # Determine which galaxies have been classified
-        self.__determineClassified()
+        if(self.fileDict):
+            self.__determineClassified()
+        else:
+            self.classified=None
 
         # Notify the window
         self.window.dictUpdated()
 
         # Enable actions
-        self.actionSubstrate.setFileActionsEnabled(True)
+        shouldActionsBeEnabled=bool(fileDict)
+        self.actionSubstrate.setFileActionsEnabled(shouldActionsBeEnabled)
         if(self.categoriesDict['categories']):
-            self.actionSubstrate.setExclusionNavigationActionEnabled(True)
+            self.actionSubstrate.setExclusionNavigationActionEnabled(shouldActionsBeEnabled)
 
         # Return
         return

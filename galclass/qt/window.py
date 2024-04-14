@@ -164,13 +164,18 @@ class MainWindow(QMainWindow):
         """
 
         # Update the metadata of the files
-        self.ngalaxies=len(self.substrate.fileDict['galaxies'])
+        if(self.substrate.fileDict):
+            self.ngalaxies=len(self.substrate.fileDict['galaxies'])
+            galaxyNames=[self.substrate.fileDict['galaxies'][igalaxy]['name'] for igalaxy in range(self.ngalaxies)]
+        else:
+            self.ngalaxies=0
+            galaxyNames=[]
 
         # Update the galaxy combobox
-        self.navigationToolbar.updateGalaxyCombobox([self.substrate.fileDict['galaxies'][igalaxy]['name'] for igalaxy in range(self.ngalaxies)])
+        self.navigationToolbar.updateGalaxyCombobox(galaxyNames)
 
         # Update the galaxy model
-        self.navigationToolbar.updateGalaxyModel([self.substrate.fileDict['galaxies'][igalaxy]['name'] for igalaxy in range(self.ngalaxies)])
+        self.navigationToolbar.updateGalaxyModel(galaxyNames)
 
         # Trigger the exclusion of classified galaxies
         self.navigationToolbar.triggerClassifiedExclusion()
@@ -179,8 +184,11 @@ class MainWindow(QMainWindow):
         self.__updateWindowTitle()
 
         # Load the first galaxy of the file dictionary
-        self.loadGalaxy(self.ngalaxies-1, noReadOut=True)
-        self.substrate.switchGalaxy(1, noReadOut=True)
+        if(self.ngalaxies>0):
+            self.loadGalaxy(self.ngalaxies-1, noReadOut=True)
+            self.substrate.switchGalaxy(1, noReadOut=True)
+        else:
+            self.loadGalaxy(None, noReadOut=True)
 
         # Return
         return

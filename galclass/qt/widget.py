@@ -59,9 +59,19 @@ class imageView(QLabel):
     A widget for the viewing of PNG images
     """
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: Optional[QWidget] = None, defaultImage: str = os.path.dirname(os.path.abspath(__file__))+'/../resources/mpg.png', aspectRatioMode: Qt.AspectRatioMode = Qt.AspectRatioMode.KeepAspectRatioByExpanding):
+        """
+        Constructor
+        """
+        # Evaluate arguments
+        self.defaultImage=defaultImage
+        self.aspectRatioMode=aspectRatioMode
+        # Initialize attributes
+        self.loadedImagePath=self.defaultImage
         # Call super().__init__
         super().__init__(parent)
+        # Set the alignment
+        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
         # Set the size policy
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         # Load the default image
@@ -69,28 +79,44 @@ class imageView(QLabel):
         # Return
         return
     
-    def __updatePixmap(self):
+    def _updatePixmap(self):
+        """
+        Updates the pixmap
+        """
         # Scale the full pixmap
-        pixmapScaled=self.pixmapFull.scaled(self.size(), Qt.AspectRatioMode.KeepAspectRatioByExpanding)
+        pixmapScaled=self.pixmapFull.scaled(self.size(), self.aspectRatioMode)
         # Set the scaled pixmap
         self.setPixmap(pixmapScaled)
         # Return
         return
     
     def resizeEvent(self, event: Optional[QResizeEvent] = None) -> None:
+        """
+        Resize event handler
+        """
         # Update the pixmap
-        self.__updatePixmap()
+        self._updatePixmap()
         # Return
         return super().resizeEvent(event)
     
-    def loadImage(self, path: str) -> None:
-        # Update the full pixmap
-        if((path=="")or(not os.path.isfile(path))):
-            self.pixmapFull=QPixmap(os.path.dirname(os.path.abspath(__file__))+'/../resources/mpg.png')
+    def loadImage(self, path: Optional[str] = None) -> None:
+        """
+        Loads the image at the specified path
+
+        Parameters
+        ----------
+        path : str, optional
+            the path to the image to be loaded (default is None)
+        """
+        # Update the loaded image path
+        if((path is not None)and(path!="")and(os.path.isfile(path))):
+            self.loadedImagePath=path
         else:
-            self.pixmapFull=QPixmap(path)
+            self.loadedImagePath=self.defaultImage
+        # Update the full pixmap
+        self.pixmapFull=QPixmap(self.loadedImagePath)
         # Update the pixmap
-        self.__updatePixmap()
+        self._updatePixmap()
         # Return
         return
 
@@ -329,9 +355,14 @@ class infoToolbar(QToolBar):
         # Return
         return
     
-    def updatePreviewImage(self, path: str):
+    def updatePreviewImage(self, path: Optional[str] = None):
         """
         Updates the preview image using the specified path
+
+        Parameters
+        ----------
+        path : str, optional
+            the path to the preview image to be loaded (default is None)
         """
 
         # Load the specified image in the preview image view

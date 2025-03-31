@@ -1,4 +1,4 @@
-# galclass
+# GalClass
 
 [![PyQt6 >=6.4.0](https://img.shields.io/badge/PyQt6->=6.4.0-red.svg)](https://pypi.org/project/PyQt6/6.4.0/)
 [![numpy >=1.13.0](https://img.shields.io/badge/numpy->=1.13.0-green.svg)](https://pypi.org/project/numpy/1.13.0/)
@@ -45,6 +45,12 @@ If you would like to use the keyboard in order to browse through the input files
 * `Right Arrow` / `Left Arrow` to view the `Next` / `Previous` filter of a galaxy
 * `Shift`+`Right Arrow` / `Shift`+`Left Arrow` to view the `Next` / `Previous` galaxy
 
-## Development
+## Acknowledging
 
-If you have any suggestions or bug reports please don't hesitate to contact me!
+If you use GalClass, we ask that you cite the following paper:
+
+* Espejo Salcedo et al., 2025 (submitted) [https://ui.adsabs.harvard.edu/abs/2025arXiv250321738E](https://ui.adsabs.harvard.edu/abs/2025arXiv250321738E)
+
+## Support & Development
+
+If you have any questions, suggestions or bug reports please don't hesitate to contact me!

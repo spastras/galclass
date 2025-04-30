@@ -1,4 +1,4 @@
-# GalClass
+# GalClass <span style="float:right;"><a href="https://ascl.net/2504.021"><img src="https://img.shields.io/badge/ascl-2504.021-blue.svg?colorB=262255" alt="ascl:2504.021" /></a></span>
 
 [![PyQt6 >=6.4.0](https://img.shields.io/badge/PyQt6->=6.4.0-red.svg)](https://pypi.org/project/PyQt6/6.4.0/)
 [![numpy >=1.13.0](https://img.shields.io/badge/numpy->=1.13.0-green.svg)](https://pypi.org/project/numpy/1.13.0/)
@@ -47,9 +47,10 @@ If you would like to use the keyboard in order to browse through the input files
 
 ## Acknowledging
 
-If you use GalClass, we ask that you cite the following paper:
+If you use GalClass, we ask that you cite both of the following:
 
-* Espejo Salcedo et al., 2025 (submitted) [https://ui.adsabs.harvard.edu/abs/2025arXiv250321738E](https://ui.adsabs.harvard.edu/abs/2025arXiv250321738E)
+* GalClass [[ascl:2504.021](https://ui.adsabs.harvard.edu/abs/2025ascl.soft04021P)]
+* Espejo Salcedo et al., 2025 (submitted) [[arXiv:2503.21738](https://ui.adsabs.harvard.edu/abs/2025arXiv250321738E)]
 
 ## Support & Development
 

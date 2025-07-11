@@ -72,7 +72,7 @@
             "categories": []
         },
         {
-            "name": "Lens System",
+            "name": "+ Lens System",
             "isAlso": [],
             "isNot": ["Disk", "Spheroidal", "Interacting/Merger", "Undefined"],
             "shortcut": "",

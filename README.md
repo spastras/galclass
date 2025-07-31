@@ -38,6 +38,12 @@ If you prefer to specify the path to the input file list in the terminal, you ca
 python3 -m galclass -c path/to/categories.json -i path/to/inputFileList.json
 ```
 
+If you want to run a working example of 8 galaxies with JWST NIRCAM images, open a terminal and stand on the location of the `examples` directory of this repository, and run the following command:
+
+```console
+python3 -m galclass -c JWST_categories.json -i example_dictionary.json
+```
+
 ## Navigation
 
 If you would like to use the keyboard in order to browse through the input files, you can do so using:
@@ -50,7 +56,7 @@ If you would like to use the keyboard in order to browse through the input files
 If you use GalClass, we ask that you cite both of the following:
 
 * GalClass [[ascl:2504.021](https://ui.adsabs.harvard.edu/abs/2025ascl.soft04021P)]
-* Espejo Salcedo et al., 2025 (submitted) [[arXiv:2503.21738](https://ui.adsabs.harvard.edu/abs/2025arXiv250321738E)]
+* Espejo Salcedo et al., 2025 (in press) [[arXiv:2503.21738](https://ui.adsabs.harvard.edu/abs/2025arXiv250321738E)]
 
 ## Support & Development
 

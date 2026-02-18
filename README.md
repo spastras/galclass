@@ -56,7 +56,7 @@ If you would like to use the keyboard in order to browse through the input files
 If you use GalClass, we ask that you cite both of the following:
 
 * GalClass [[ascl:2504.021](https://ui.adsabs.harvard.edu/abs/2025ascl.soft04021P)]
-* Espejo Salcedo et al., 2025 (in press) [[arXiv:2503.21738](https://ui.adsabs.harvard.edu/abs/2025arXiv250321738E)]
+* Espejo Salcedo et al., 2025 [[A&A, 700, A42 (2025)](https://ui.adsabs.harvard.edu/abs/2025A%26A...700A..42E/abstract)]
 
 ## Support & Development
 

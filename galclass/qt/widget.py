@@ -276,6 +276,7 @@ class infoToolbar(QToolBar):
 
         # Initialize the preview image view
         self.previewImageView=imageView(self)
+        self.previewImageView.setMinimumSize(300, 300)
 
         # Add the preview image view
         previewImageGroupBoxLayout.addWidget(self.previewImageView, 0, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
@@ -347,6 +348,9 @@ class infoToolbar(QToolBar):
 
         # Add the filter info groupbox to tab layout
         layout.addWidget(filterInfoGroupbox, 2, 0, 1, 1)
+        layout.setRowStretch(0, 3)  # Preview
+        layout.setRowStretch(1, 1)  # Galaxy
+        layout.setRowStretch(2, 1)  # Filter
 
         # Initialize info tab widget
         self.infoTab=QWidget()
